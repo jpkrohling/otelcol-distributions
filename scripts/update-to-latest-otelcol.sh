@@ -64,7 +64,10 @@ git checkout -b "${branch}" main
 manifests=$(find ${REPO_DIR} -name manifest.yaml)
 for manifest in $manifests; do
     echo "Updating $manifest"
-    # the first token to replace is the otelcol_version
+    # the first token to replace is the version
+    sed -i "s~version.*~version: ${latest_core_version}~" $manifest
+
+    # then the otelcol_version
     sed -i "s~otelcol_version.*~otelcol_version: ${latest_core_version}~" $manifest
 
     # now, the collector gomod:
