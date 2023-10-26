@@ -18,7 +18,6 @@ trigger:
   - main
   event:
     include:
-    - pull_request
     - push
 type: docker
 ---
@@ -40,7 +39,6 @@ trigger:
   - main
   event:
     include:
-    - pull_request
     - push
 type: docker
 ---
@@ -172,6 +170,6 @@ kind: secret
 name: argo_token
 ---
 kind: signature
-hmac: 6d74ec0a539985d9110e4a8f560de3b27bd714b8bad9619fc4d9418b78a463e1
+hmac: 2a1ef7ebd5b30cd4e548ea58f11362f83a54534eaf7790011c747d61f98e7a91
 
 ...
