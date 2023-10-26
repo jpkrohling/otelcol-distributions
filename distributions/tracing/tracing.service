@@ -1,5 +1,5 @@
 [Unit]
-Description=Grafana Lab's tracing distribution for the OpenTelemetry Collector
+Description=Distributed tracing distribution of the OpenTelemetry Collector
 After=network.target
 
 [Service]

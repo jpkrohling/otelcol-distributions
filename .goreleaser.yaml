@@ -1,4 +1,4 @@
-project_name: opentelemetry-collector-components
+project_name: otelcol-distributions
 builds:
 - id: sidecar
   goos:
@@ -81,8 +81,8 @@ nfpms:
   - apk
   - deb
   - rpm
-  maintainer: The OpenTelemetry Team @ Grafana Labs <opentelemetry@grafana.com>
-  description: Grafana Lab's sidecar distribution of the OpenTelemetry Collector
+  maintainer: Juraci Paixão Kröhling <distributions@kroehling.de>
+  description: sidecar distribution of the OpenTelemetry Collector
   license: Apache 2.0
 - package_name: tracing
   contents:
@@ -105,8 +105,8 @@ nfpms:
   - apk
   - deb
   - rpm
-  maintainer: The OpenTelemetry Team @ Grafana Labs <opentelemetry@grafana.com>
-  description: Grafana Lab's tracing distribution of the OpenTelemetry Collector
+  maintainer: Juraci Paixão Kröhling <distributions@kroehling.de>
+  description: tracing distribution of the OpenTelemetry Collector
   license: Apache 2.0
 checksum:
   name_template: '{{ .ProjectName }}_checksums.txt'
@@ -115,7 +115,7 @@ dockers:
   goarch: "386"
   dockerfile: distributions/sidecar/Dockerfile
   image_templates:
-  - ghcr.io/grafana/opentelemetry-collector-components/sidecar:{{ .Version }}-386
+  - ghcr.io/jpkrohling/otelcol-distributions/sidecar:{{ .Version }}-386
   extra_files:
   - configs/sidecar.yaml
   build_flag_templates:
@@ -131,7 +131,7 @@ dockers:
   goarch: amd64
   dockerfile: distributions/sidecar/Dockerfile
   image_templates:
-  - ghcr.io/grafana/opentelemetry-collector-components/sidecar:{{ .Version }}-amd64
+  - ghcr.io/jpkrohling/otelcol-distributions/sidecar:{{ .Version }}-amd64
   extra_files:
   - configs/sidecar.yaml
   build_flag_templates:
@@ -147,7 +147,7 @@ dockers:
   goarch: arm64
   dockerfile: distributions/sidecar/Dockerfile
   image_templates:
-  - ghcr.io/grafana/opentelemetry-collector-components/sidecar:{{ .Version }}-arm64
+  - ghcr.io/jpkrohling/otelcol-distributions/sidecar:{{ .Version }}-arm64
   extra_files:
   - configs/sidecar.yaml
   build_flag_templates:
@@ -163,7 +163,7 @@ dockers:
   goarch: ppc64le
   dockerfile: distributions/sidecar/Dockerfile
   image_templates:
-  - ghcr.io/grafana/opentelemetry-collector-components/sidecar:{{ .Version }}-ppc64le
+  - ghcr.io/jpkrohling/otelcol-distributions/sidecar:{{ .Version }}-ppc64le
   extra_files:
   - configs/sidecar.yaml
   build_flag_templates:
@@ -179,7 +179,7 @@ dockers:
   goarch: "386"
   dockerfile: distributions/tracing/Dockerfile
   image_templates:
-  - ghcr.io/grafana/opentelemetry-collector-components/tracing:{{ .Version }}-386
+  - ghcr.io/jpkrohling/otelcol-distributions/tracing:{{ .Version }}-386
   extra_files:
   - configs/tracing.yaml
   build_flag_templates:
@@ -195,7 +195,7 @@ dockers:
   goarch: amd64
   dockerfile: distributions/tracing/Dockerfile
   image_templates:
-  - ghcr.io/grafana/opentelemetry-collector-components/tracing:{{ .Version }}-amd64
+  - ghcr.io/jpkrohling/otelcol-distributions/tracing:{{ .Version }}-amd64
   extra_files:
   - configs/tracing.yaml
   build_flag_templates:
@@ -211,7 +211,7 @@ dockers:
   goarch: arm64
   dockerfile: distributions/tracing/Dockerfile
   image_templates:
-  - ghcr.io/grafana/opentelemetry-collector-components/tracing:{{ .Version }}-arm64
+  - ghcr.io/jpkrohling/otelcol-distributions/tracing:{{ .Version }}-arm64
   extra_files:
   - configs/tracing.yaml
   build_flag_templates:
@@ -227,7 +227,7 @@ dockers:
   goarch: ppc64le
   dockerfile: distributions/tracing/Dockerfile
   image_templates:
-  - ghcr.io/grafana/opentelemetry-collector-components/tracing:{{ .Version }}-ppc64le
+  - ghcr.io/jpkrohling/otelcol-distributions/tracing:{{ .Version }}-ppc64le
   extra_files:
   - configs/tracing.yaml
   build_flag_templates:
@@ -240,17 +240,15 @@ dockers:
   - --label=org.opencontainers.image.source={{.GitURL}}
   use: buildx
 docker_manifests:
-- name_template: ghcr.io/grafana/opentelemetry-collector-components/sidecar:{{ .Version
-    }}
+- name_template: ghcr.io/jpkrohling/otelcol-distributions/sidecar:{{ .Version }}
   image_templates:
-  - ghcr.io/grafana/opentelemetry-collector-components/sidecar:{{ .Version }}-386
-  - ghcr.io/grafana/opentelemetry-collector-components/sidecar:{{ .Version }}-amd64
-  - ghcr.io/grafana/opentelemetry-collector-components/sidecar:{{ .Version }}-arm64
-  - ghcr.io/grafana/opentelemetry-collector-components/sidecar:{{ .Version }}-ppc64le
-- name_template: ghcr.io/grafana/opentelemetry-collector-components/tracing:{{ .Version
-    }}
+  - ghcr.io/jpkrohling/otelcol-distributions/sidecar:{{ .Version }}-386
+  - ghcr.io/jpkrohling/otelcol-distributions/sidecar:{{ .Version }}-amd64
+  - ghcr.io/jpkrohling/otelcol-distributions/sidecar:{{ .Version }}-arm64
+  - ghcr.io/jpkrohling/otelcol-distributions/sidecar:{{ .Version }}-ppc64le
+- name_template: ghcr.io/jpkrohling/otelcol-distributions/tracing:{{ .Version }}
   image_templates:
-  - ghcr.io/grafana/opentelemetry-collector-components/tracing:{{ .Version }}-386
-  - ghcr.io/grafana/opentelemetry-collector-components/tracing:{{ .Version }}-amd64
-  - ghcr.io/grafana/opentelemetry-collector-components/tracing:{{ .Version }}-arm64
-  - ghcr.io/grafana/opentelemetry-collector-components/tracing:{{ .Version }}-ppc64le
+  - ghcr.io/jpkrohling/otelcol-distributions/tracing:{{ .Version }}-386
+  - ghcr.io/jpkrohling/otelcol-distributions/tracing:{{ .Version }}-amd64
+  - ghcr.io/jpkrohling/otelcol-distributions/tracing:{{ .Version }}-arm64
+  - ghcr.io/jpkrohling/otelcol-distributions/tracing:{{ .Version }}-ppc64le

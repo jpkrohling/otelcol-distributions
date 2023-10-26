@@ -21,7 +21,7 @@ import (
 )
 
 var (
-	ImagePrefixes = []string{"ghcr.io/grafana/opentelemetry-collector-components"}
+	ImagePrefixes = []string{"ghcr.io/jpkrohling/otelcol-distributions"}
 	Architectures = []string{"386", "amd64", "arm64", "ppc64le"}
 
 	distsFlag = flag.String("d", "", "Distributions(s) to build, comma-separated")
@@ -44,7 +44,7 @@ func main() {
 
 func Generate(imagePrefixes []string, dists []string) config.Project {
 	return config.Project{
-		ProjectName: "opentelemetry-collector-components",
+		ProjectName: "otelcol-distributions",
 		Checksum: config.Checksum{
 			NameTemplate: "{{ .ProjectName }}_checksums.txt",
 		},
@@ -118,8 +118,8 @@ func Package(dist string) config.NFPM {
 		Formats: []string{"apk", "deb", "rpm"},
 
 		License:     "Apache 2.0",
-		Description: fmt.Sprintf("Grafana Lab's %s distribution of the OpenTelemetry Collector", dist),
-		Maintainer:  "The OpenTelemetry Team @ Grafana Labs <opentelemetry@grafana.com>",
+		Description: fmt.Sprintf("%s distribution of the OpenTelemetry Collector", dist),
+		Maintainer:  "Juraci Paixão Kröhling <distributions@kroehling.de>",
 
 		NFPMOverridables: config.NFPMOverridables{
 			PackageName: dist,

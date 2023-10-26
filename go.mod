@@ -1,6 +1,6 @@
-module github.com/grafana/opentelemetry-collector-components
+module github.com/jpkrohling/otelcol-distributions
 
-go 1.19
+go 1.20
 
 require (
 	github.com/goreleaser/goreleaser v1.11.2

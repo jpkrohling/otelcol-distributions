@@ -7,7 +7,7 @@ do
     esac
 done
 if [[ -z $distribution ]]; then
-    echo "Distributioon to test not provided. Use '-d' to specify the names of the distribution to test. Ex.:"
+    echo "Distribution to test not provided. Use '-d' to specify the names of the distribution to test. Ex.:"
     echo "$0 -d tracing"
     exit 1
 fi
@@ -23,14 +23,14 @@ while true
 do
     kill -0 "${pid}" >/dev/null 2>&1
     if [ $? != 0 ]; then
-        echo "❌ FAIL. The Grafana Labs '${distribution}' distribution of the OpenTelemetry Collector isn't running. Startup log:"
+        echo "❌ FAIL. The '${distribution}' distribution of the OpenTelemetry Collector isn't running. Startup log:"
         failed=true
         exit 1
     fi
 
     curl -s localhost:13133 | grep "Server available" > /dev/null
     if [ $? == 0 ]; then
-        echo "✅ The Grafana Labs '${distribution}' distribution of the OpenTelemetry Collector started."
+        echo "✅ The '${distribution}' distribution of the OpenTelemetry Collector started."
         echo "${pid}" > "otelcol-${distribution}.pid"
         break
     fi

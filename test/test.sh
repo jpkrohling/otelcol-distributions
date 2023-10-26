@@ -20,7 +20,7 @@ function teardown {
 
     mkdir -p ./test/logs
     
-    echo "🪵 Grafana Labs '${distribution}' distribution of the OpenTelemetry Collector logs"
+    echo "🪵 '${distribution}' distribution of the OpenTelemetry Collector logs"
     cat ./test/logs/otelcol-${distribution}.log
 
     echo "🪵 Test logs"
@@ -42,7 +42,7 @@ done
 trap teardown EXIT
 
 ## test
-echo "🔧 Starting Grafana Labs '${distribution}' distribution of the OpenTelemetry Collector..."
+echo "🔧 Starting '${distribution}' distribution of the OpenTelemetry Collector..."
 ./test/start-otelcol.sh -d ${distribution}
 rc=$?
 if [ $rc != 0 ]; then
