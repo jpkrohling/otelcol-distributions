@@ -5,14 +5,12 @@ on:
     branches: [main]
     paths:
     - ".goreleaser.yaml"
-    - "distributions/otlp-gateway/manifest.yaml"
     - "distributions/sidecar/manifest.yaml"
     - "distributions/tracing/manifest.yaml"
   pull_request:
     branches: [main]
     paths:
     - ".goreleaser.yaml"
-    - "distributions/otlp-gateway/manifest.yaml"
     - "distributions/sidecar/manifest.yaml"
     - "distributions/tracing/manifest.yaml"
 
