@@ -1,0 +1,21 @@
+name: CI tracing
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "distributions/tracing/.goreleaser.yaml"
+      - "distributions/tracing/manifest.yaml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "distributions/tracing/.goreleaser.yaml"
+      - "distributions/tracing/manifest.yaml"
+
+jobs:
+  release:
+    name: CI - GoReleaser - tracing
+    uses: ./.github/workflows/base-goreleaser-ci.yaml
+    with:
+      distribution: tracing
+    secrets: inherit

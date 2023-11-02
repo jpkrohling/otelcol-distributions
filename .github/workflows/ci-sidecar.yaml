@@ -1,0 +1,21 @@
+name: CI sidecar
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "distributions/sidecar/.goreleaser.yaml"
+      - "distributions/sidecar/manifest.yaml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "distributions/sidecar/.goreleaser.yaml"
+      - "distributions/sidecar/manifest.yaml"
+
+jobs:
+  release:
+    name: CI - GoReleaser - sidecar
+    uses: ./.github/workflows/base-goreleaser-ci.yaml
+    with:
+      distribution: sidecar
+    secrets: inherit
