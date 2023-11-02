@@ -34,7 +34,7 @@ jobs:
         run: make generate-sources
 
       - name: Login to GitHub Package Registry
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
