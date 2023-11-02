@@ -45,6 +45,6 @@ jobs:
         with:
           version: latest
           workdir: distributions/sidecar
-          args: release --clean --timeout 2h --nightly
+          args: release --clean --timeout 2h --snapshot 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
