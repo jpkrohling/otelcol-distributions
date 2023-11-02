@@ -1,4 +1,4 @@
-name: Release
+name: Release sidecar
 
 on:
   workflow_dispatch:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   release:
-    name: Release
+    name: Release sidecar
     environment: release
     runs-on: ubuntu-20.04
 
@@ -41,11 +41,10 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v3
+        uses: goreleaser/goreleaser-action@v5
         with:
-          distribution: goreleaser-pro
           version: latest
+          workdir: distributions/sidecar
           args: release --clean --timeout 2h --nightly
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}

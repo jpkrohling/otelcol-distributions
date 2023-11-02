@@ -19,9 +19,10 @@ if [ $? != 0 ]; then
     exit 2
 fi
 
-while kill -0 ${pid}
+while kill -0 "${pid}" >/dev/null 2>&1
 do
     sleep 0.1s
 done
 
+rm "otelcol-${distribution}.pid"
 echo "✅ '${distribution}' distribution of the OpenTelemetry Collector stopped."

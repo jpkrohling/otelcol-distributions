@@ -1,14 +1,14 @@
 version: 2
 updates:
   - package-ecosystem: "github-actions" # See documentation for possible values
-    directory: "/" # Location of package manifests
+    directory: "/"
     schedule:
       interval: "daily"
   - package-ecosystem: "docker"
-    directory: "/./distributions/sidecar"
+    directory: "./distributions/sidecar"
     schedule:
       interval: "daily"
   - package-ecosystem: "docker"
-    directory: "/./distributions/tracing"
+    directory: "./distributions/tracing"
     schedule:
       interval: "daily"

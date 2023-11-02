@@ -15,7 +15,7 @@ fi
 max_retries=50
 
 # start the distribution
-./distributions/${distribution}/_build/otelcol --config test/config/${distribution}.yaml  > ./test/logs/otelcol-${distribution}.log 2>&1 &
+./distributions/${distribution}/_build/otelcol --config ./distributions/${distribution}/otelcol-test.yaml  > ./test/logs/otelcol-${distribution}.log 2>&1 &
 pid=$!
 
 retries=0

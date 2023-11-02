@@ -13,7 +13,6 @@ import (
 	"log"
 	"os"
 	"path"
-	"strings"
 
 	"github.com/goreleaser/goreleaser/pkg/config"
 	"github.com/goreleaser/nfpm/v2/files"
@@ -24,44 +23,35 @@ var (
 	ImagePrefixes = []string{"ghcr.io/jpkrohling/otelcol-distributions"}
 	Architectures = []string{"386", "amd64", "arm64", "ppc64le"}
 
-	distsFlag = flag.String("d", "", "Distributions(s) to build, comma-separated")
+	distFlag = flag.String("d", "", "Single distribution to build")
 )
 
 func main() {
 	flag.Parse()
 
-	if len(*distsFlag) == 0 {
-		log.Fatal("no distributions to build")
+	if len(*distFlag) == 0 {
+		log.Fatal("no distribution to build")
 	}
-	dists := strings.Split(*distsFlag, ",")
 
-	project := Generate(ImagePrefixes, dists)
-
+	project := Generate(ImagePrefixes, *distFlag)
 	if err := yaml.NewEncoder(os.Stdout).Encode(&project); err != nil {
 		log.Fatal(err)
 	}
 }
 
-func Generate(imagePrefixes []string, dists []string) config.Project {
+func Generate(imagePrefixes []string, dist string) config.Project {
 	return config.Project{
-		ProjectName: "otelcol-distributions",
+		ProjectName: dist,
 		Checksum: config.Checksum{
 			NameTemplate: "{{ .ProjectName }}_checksums.txt",
 		},
 
-		Builds:          Builds(dists),
-		Archives:        Archives(dists),
-		NFPMs:           Packages(dists),
-		Dockers:         DockerImages(imagePrefixes, dists),
-		DockerManifests: DockerManifests(imagePrefixes, dists),
+		Builds:          []config.Build{Build(dist)},
+		Archives:        []config.Archive{Archive(dist)},
+		NFPMs:           []config.NFPM{Package(dist)},
+		Dockers:         DockerImages(imagePrefixes, dist),
+		DockerManifests: DockerManifest(imagePrefixes, dist),
 	}
-}
-
-func Builds(dists []string) (r []config.Build) {
-	for _, dist := range dists {
-		r = append(r, Build(dist))
-	}
-	return
 }
 
 // Build configures a goreleaser build.
@@ -69,7 +59,7 @@ func Builds(dists []string) (r []config.Build) {
 func Build(dist string) config.Build {
 	return config.Build{
 		ID:     dist,
-		Dir:    path.Join("distributions", dist, "_build"),
+		Dir:    "_build",
 		Binary: dist,
 		BuildDetails: config.BuildDetails{
 			Env:     []string{"CGO_ENABLED=0"},
@@ -85,13 +75,6 @@ func Build(dist string) config.Build {
 	}
 }
 
-func Archives(dists []string) (r []config.Archive) {
-	for _, dist := range dists {
-		r = append(r, Archive(dist))
-	}
-	return
-}
-
 // Archive configures a goreleaser archive (tarball).
 // https://goreleaser.com/customization/archive/
 func Archive(dist string) config.Archive {
@@ -100,13 +83,6 @@ func Archive(dist string) config.Archive {
 		NameTemplate: "{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}",
 		Builds:       []string{dist},
 	}
-}
-
-func Packages(dists []string) (r []config.NFPM) {
-	for _, dist := range dists {
-		r = append(r, Package(dist))
-	}
-	return
 }
 
 // Package configures goreleaser to build a system package.
@@ -124,22 +100,22 @@ func Package(dist string) config.NFPM {
 		NFPMOverridables: config.NFPMOverridables{
 			PackageName: dist,
 			Scripts: config.NFPMScripts{
-				PreInstall:  path.Join("distributions", dist, "preinstall.sh"),
-				PostInstall: path.Join("distributions", dist, "postinstall.sh"),
-				PreRemove:   path.Join("distributions", dist, "preremove.sh"),
+				PreInstall:  "preinstall.sh",
+				PostInstall: "postinstall.sh",
+				PreRemove:   "preremove.sh",
 			},
 			Contents: files.Contents{
 				{
-					Source:      path.Join("distributions", dist, fmt.Sprintf("%s.service", dist)),
+					Source:      fmt.Sprintf("%s.service", dist),
 					Destination: path.Join("/lib", "systemd", "system", fmt.Sprintf("%s.service", dist)),
 				},
 				{
-					Source:      path.Join("distributions", dist, fmt.Sprintf("%s.conf", dist)),
+					Source:      fmt.Sprintf("%s.conf", dist),
 					Destination: path.Join("/etc", dist, fmt.Sprintf("%s.conf", dist)),
 					Type:        "config|noreplace",
 				},
 				{
-					Source:      path.Join("configs", fmt.Sprintf("%s.yaml", dist)),
+					Source:      "otelcol.yaml",
 					Destination: path.Join("/etc", dist, "config.yaml"),
 					Type:        "config",
 				},
@@ -148,11 +124,9 @@ func Package(dist string) config.NFPM {
 	}
 }
 
-func DockerImages(imagePrefixes, dists []string) (r []config.Docker) {
-	for _, dist := range dists {
-		for _, arch := range Architectures {
-			r = append(r, DockerImage(imagePrefixes, dist, arch))
-		}
+func DockerImages(imagePrefixes []string, dist string) (r []config.Docker) {
+	for _, arch := range Architectures {
+		r = append(r, DockerImage(imagePrefixes, dist, arch))
 	}
 	return
 }
@@ -174,7 +148,7 @@ func DockerImage(imagePrefixes []string, dist, arch string) config.Docker {
 
 	return config.Docker{
 		ImageTemplates: imageTemplates,
-		Dockerfile:     path.Join("distributions", dist, "Dockerfile"),
+		Dockerfile:     "Dockerfile",
 
 		Use: "buildx",
 		BuildFlagTemplates: []string{
@@ -186,17 +160,10 @@ func DockerImage(imagePrefixes []string, dist, arch string) config.Docker {
 			label("version", ".Version"),
 			label("source", ".GitURL"),
 		},
-		Files:  []string{path.Join("configs", fmt.Sprintf("%s.yaml", dist))},
+		Files:  []string{"otelcol.yaml"},
 		Goos:   "linux",
 		Goarch: arch,
 	}
-}
-
-func DockerManifests(imagePrefixes, dists []string) (r []config.DockerManifest) {
-	for _, dist := range dists {
-		r = append(r, DockerManifest(imagePrefixes, dist)...)
-	}
-	return
 }
 
 // DockerManifest configures goreleaser to build a multi-arch container image manifest.
