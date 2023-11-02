@@ -47,6 +47,6 @@ jobs:
         with:
           version: latest
           workdir: distributions/${{ inputs.distribution }}
-          args: release --clean --timeout 2h --snapshot
+          args: release --clean --timeout 2h
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
