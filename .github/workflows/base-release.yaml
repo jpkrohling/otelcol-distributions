@@ -9,7 +9,7 @@ on:
 
 jobs:
   release:
-    name: Release sidecar
+    name: Release ${{ inputs.distribution }}
     environment: release
     runs-on: ubuntu-20.04
 
