@@ -11,3 +11,4 @@ jobs:
     with:
       distribution: tracing
     secrets: inherit
+    permissions: write-all

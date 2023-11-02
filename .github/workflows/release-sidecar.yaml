@@ -11,3 +11,4 @@ jobs:
     with:
       distribution: sidecar
     secrets: inherit
+    permissions: write-all
