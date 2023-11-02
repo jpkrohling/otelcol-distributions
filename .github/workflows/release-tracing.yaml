@@ -1,10 +1,8 @@
 name: Release tracing
 
 on:
-  workflow_run:
-    workflows: [Continuous Integration - tracing]
-    types:
-      - completed
+  release:
+    types: [published]
 
 jobs:
   release:
