@@ -1,20 +1,14 @@
-name: CI sidecar
+name: Continuous Integration - sidecar
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - "distributions/sidecar/.goreleaser.yaml"
-      - "distributions/sidecar/manifest.yaml"
-  pull_request:
-    branches: [main]
-    paths:
-      - "distributions/sidecar/.goreleaser.yaml"
-      - "distributions/sidecar/manifest.yaml"
+  workflow_run:
+    workflows: [Continuous Integration]
+    types:
+      - completed
 
 jobs:
   release:
-    name: CI - GoReleaser - sidecar
+    name: Continuous Integration - sidecar - GoReleaser
     uses: ./.github/workflows/base-goreleaser-ci.yaml
     with:
       distribution: sidecar

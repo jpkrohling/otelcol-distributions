@@ -1,9 +1,10 @@
 name: Release sidecar
 
 on:
-  workflow_dispatch:
-  push:
-    branches: [main]
+  workflow_run:
+    workflows: [Continuous Integration - sidecar]
+    types:
+      - completed
 
 jobs:
   release:

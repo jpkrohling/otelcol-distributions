@@ -1,9 +1,10 @@
 name: Release tracing
 
 on:
-  workflow_dispatch:
-  push:
-    branches: [main]
+  workflow_run:
+    workflows: [Continuous Integration - tracing]
+    types:
+      - completed
 
 jobs:
   release:

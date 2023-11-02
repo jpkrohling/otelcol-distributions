@@ -1,20 +1,14 @@
-name: CI tracing
+name: Continuous Integration - tracing
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - "distributions/tracing/.goreleaser.yaml"
-      - "distributions/tracing/manifest.yaml"
-  pull_request:
-    branches: [main]
-    paths:
-      - "distributions/tracing/.goreleaser.yaml"
-      - "distributions/tracing/manifest.yaml"
+  workflow_run:
+    workflows: [Continuous Integration]
+    types:
+      - completed
 
 jobs:
   release:
-    name: CI - GoReleaser - tracing
+    name: Continuous Integration - sidecar - GoReleaser
     uses: ./.github/workflows/base-goreleaser-ci.yaml
     with:
       distribution: tracing
