@@ -5,9 +5,6 @@ on:
   schedule:
     - cron: '0 * * * *'
 
-permissions:
-  pull-requests: write
-
 jobs:
   build:
     name: Auto-update on new core/contrib versions
