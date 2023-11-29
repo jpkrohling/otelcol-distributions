@@ -32,6 +32,10 @@ jobs:
         with:
           go-version: 1.21
 
+      - uses: sigstore/cosign-installer@v3
+
+      - uses: anchore/sbom-action/download-syft@v0.14.3
+
       - name: Generate distribution sources
         run: make generate-sources
 
