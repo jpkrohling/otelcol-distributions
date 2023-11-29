@@ -1,6 +1,8 @@
 module github.com/jpkrohling/otelcol-distributions
 
-go 1.20
+go 1.21
+
+toolchain go1.21.4
 
 require (
 	github.com/goreleaser/goreleaser v1.21.2

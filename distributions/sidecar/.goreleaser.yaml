@@ -128,3 +128,5 @@ docker_manifests:
         - ghcr.io/jpkrohling/otelcol-distributions/sidecar:{{ .Version }}-amd64
         - ghcr.io/jpkrohling/otelcol-distributions/sidecar:{{ .Version }}-arm64
         - ghcr.io/jpkrohling/otelcol-distributions/sidecar:{{ .Version }}-ppc64le
+sboms:
+    - artifacts: archive

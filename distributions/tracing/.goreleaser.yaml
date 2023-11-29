@@ -128,3 +128,5 @@ docker_manifests:
         - ghcr.io/jpkrohling/otelcol-distributions/tracing:{{ .Version }}-amd64
         - ghcr.io/jpkrohling/otelcol-distributions/tracing:{{ .Version }}-arm64
         - ghcr.io/jpkrohling/otelcol-distributions/tracing:{{ .Version }}-ppc64le
+sboms:
+    - artifacts: archive

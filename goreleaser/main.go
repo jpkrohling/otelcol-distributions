@@ -51,6 +51,11 @@ func Generate(imagePrefixes []string, dist string) config.Project {
 		NFPMs:           []config.NFPM{Package(dist)},
 		Dockers:         DockerImages(imagePrefixes, dist),
 		DockerManifests: DockerManifest(imagePrefixes, dist),
+		SBOMs: []config.SBOM{
+			{
+				Artifacts: "archive",
+			},
+		},
 	}
 }
 
