@@ -1,4 +1,6 @@
 project_name: sidecar
+env:
+    - COSIGN_YES=true
 builds:
     - id: sidecar
       goos:
@@ -132,9 +134,23 @@ signs:
     - cmd: cosign
       args:
         - sign-blob
-        - --oidc-issuer=https://token.actions.githubusercontent.com
-        - --output-signature=${signature}
+        - --output-signature
+        - ${artifact}.sig
+        - --output-certificate
+        - ${artifact}.pem
+        - --certificate-oidc-issuer
+        - https://token.actions.githubusercontent.com
+        - ${artifact}
+      signature: ${artifact}.sig
+      artifacts: all
+      certificate: ${artifact}.pem
+docker_signs:
+    - args:
+        - sign
         - ${artifact}
       artifacts: all
 sboms:
-    - artifacts: archive
+    - id: archive
+      artifacts: archive
+    - id: package
+      artifacts: package
