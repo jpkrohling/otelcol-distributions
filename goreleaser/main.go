@@ -74,7 +74,7 @@ func Generate(imagePrefixes []string, dist string) config.Project {
 					"${artifact}.sig",
 					"--output-certificate",
 					"${artifact}.pem",
-					"--certificate-oidc-issuer",
+					"--oidc-issuer",
 					"https://token.actions.githubusercontent.com",
 					"${artifact}",
 				},
