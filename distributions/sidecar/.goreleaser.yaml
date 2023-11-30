@@ -138,7 +138,7 @@ signs:
         - ${artifact}.sig
         - --output-certificate
         - ${artifact}.pem
-        - --certificate-oidc-issuer
+        - --oidc-issuer
         - https://token.actions.githubusercontent.com
         - ${artifact}
       signature: ${artifact}.sig
