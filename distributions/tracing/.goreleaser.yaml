@@ -1,6 +1,4 @@
 project_name: tracing
-env:
-    - COSIGN_YES=true
 builds:
     - id: tracing
       goos:
@@ -130,25 +128,6 @@ docker_manifests:
         - ghcr.io/jpkrohling/otelcol-distributions/tracing:{{ .Version }}-amd64
         - ghcr.io/jpkrohling/otelcol-distributions/tracing:{{ .Version }}-arm64
         - ghcr.io/jpkrohling/otelcol-distributions/tracing:{{ .Version }}-ppc64le
-signs:
-    - cmd: cosign
-      args:
-        - sign-blob
-        - --output-signature
-        - ${artifact}.sig
-        - --output-certificate
-        - ${artifact}.pem
-        - --oidc-issuer
-        - https://token.actions.githubusercontent.com
-        - ${artifact}
-      signature: ${artifact}.sig
-      artifacts: all
-      certificate: ${artifact}.pem
-docker_signs:
-    - args:
-        - sign
-        - ${artifact}
-      artifacts: all
 sboms:
     - id: archive
       artifacts: archive

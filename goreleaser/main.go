@@ -46,7 +46,6 @@ func Generate(imagePrefixes []string, dist string) config.Project {
 			NameTemplate: "{{ .ProjectName }}_checksums.txt",
 		},
 
-		Env:             []string{"COSIGN_YES=true"},
 		Builds:          []config.Build{Build(dist)},
 		Archives:        []config.Archive{Archive(dist)},
 		NFPMs:           []config.NFPM{Package(dist)},
@@ -60,33 +59,6 @@ func Generate(imagePrefixes []string, dist string) config.Project {
 			{
 				ID:        "package",
 				Artifacts: "package",
-			},
-		},
-		Signs: []config.Sign{
-			{
-				Cmd:         "cosign",
-				Artifacts:   "all",
-				Signature:   "${artifact}.sig",
-				Certificate: "${artifact}.pem",
-				Args: []string{
-					"sign-blob",
-					"--output-signature",
-					"${artifact}.sig",
-					"--output-certificate",
-					"${artifact}.pem",
-					"--oidc-issuer",
-					"https://token.actions.githubusercontent.com",
-					"${artifact}",
-				},
-			},
-		},
-		DockerSigns: []config.Sign{
-			{
-				Artifacts: "all",
-				Args: []string{
-					"sign",
-					"${artifact}",
-				},
 			},
 		},
 	}
