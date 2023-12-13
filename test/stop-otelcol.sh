@@ -13,6 +13,11 @@ if [[ -z $distribution ]]; then
 fi
 
 pid=$(cat otelcol-${distribution}.pid)
+if [[ -z $pid ]]; then
+    echo "No Collectors running. Nothing to stop."
+    exit 0
+fi
+
 kill "${pid}"
 if [ $? != 0 ]; then
     echo "Failed to stop the running instance. Return code: $? . Skipping tests."

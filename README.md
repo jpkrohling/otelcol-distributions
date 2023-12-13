@@ -10,8 +10,7 @@ To add a new distribution to this repository:
 
 1) create a directory under `distributions` and place the `manifest.yaml` there
 2) change the `Makefile`'s `DISTRIBUTIONS` var to include the new distribution
-3) add a configuration file in the `test/config` with your distribution's name
-4) add `./github/workflows/ci-<distribution>.yaml` and `./github/workflows/release-<distribution>.yaml` files based on one of the existing distributions
+3) add `./github/workflows/ci-<distribution>.yaml` and `./github/workflows/release-<distribution>.yaml` files based on one of the existing distributions
 
 You can test your new distribution with:
 
