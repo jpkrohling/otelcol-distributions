@@ -18,4 +18,9 @@ echo "Distributions to test: $distributions";
 for distribution in $(echo "$distributions" | tr "," "\n")
 do
     ./test/test.sh -d "${distribution}"
+    rc=$?
+    if [ $rc != 0 ]; then
+        echo "❌ FAIL. Test failed for '${distribution}' distribution."
+        exit $rc
+    fi
 done

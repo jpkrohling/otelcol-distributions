@@ -1,0 +1,29 @@
+extensions:
+  health_check:
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+
+processors:
+
+exporters:
+  loadbalancing:
+    protocol:
+      otlp:
+        timeout: 1s
+    resolver:
+      static:
+        hostnames:
+        - example.com:4317
+
+service:
+  extensions: []
+  pipelines:
+    traces:
+      receivers:
+        - otlp
+      processors: []
+      exporters:
+        - loadbalancing

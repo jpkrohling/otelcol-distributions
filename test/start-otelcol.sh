@@ -17,6 +17,7 @@ max_retries=50
 # start the distribution
 ./distributions/${distribution}/_build/otelcol --config ./distributions/${distribution}/otelcol-test.yaml  > ./test/logs/otelcol-${distribution}.log 2>&1 &
 pid=$!
+echo "${pid}" > "otelcol-${distribution}.pid"
 
 retries=0
 while true
@@ -31,7 +32,6 @@ do
     curl -s localhost:13133 | grep "Server available" > /dev/null
     if [ $? == 0 ]; then
         echo "✅ The '${distribution}' distribution of the OpenTelemetry Collector started."
-        echo "${pid}" > "otelcol-${distribution}.pid"
         break
     fi
 
@@ -40,12 +40,6 @@ do
     let "retries++"
     if [ "$retries" -gt "$max_retries" ]; then
         echo "❌ FAIL. Server wasn't up after about 5s."
-
-        kill "${pid}"
-        if [ $? != 0 ]; then
-            echo "Failed to stop the running instance. Return code: $? . Skipping tests."
-            exit 8
-        fi
         exit 16
     fi
     sleep 0.1s

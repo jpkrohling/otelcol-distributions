@@ -4,7 +4,7 @@ OTELCOL_BUILDER_VERSION ?= 0.91.0
 OTELCOL_BUILDER_DIR ?= ${HOME}/bin
 OTELCOL_BUILDER ?= ${OTELCOL_BUILDER_DIR}/ocb
 
-DISTRIBUTIONS ?= "sidecar,tracing"
+DISTRIBUTIONS ?= "loadbalancing,sidecar,tracing"
 
 ci: check build
 check: test
