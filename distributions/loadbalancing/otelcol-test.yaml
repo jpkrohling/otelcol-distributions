@@ -19,7 +19,7 @@ exporters:
         - example.com:4317
 
 service:
-  extensions: []
+  extensions: [health_check]
   pipelines:
     traces:
       receivers:
