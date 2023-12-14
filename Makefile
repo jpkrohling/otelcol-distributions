@@ -4,7 +4,7 @@ OTELCOL_BUILDER_VERSION ?= 0.91.0
 OTELCOL_BUILDER_DIR ?= ${HOME}/bin
 OTELCOL_BUILDER ?= ${OTELCOL_BUILDER_DIR}/ocb
 
-DISTRIBUTIONS ?= "loadbalancing,sidecar,tracing"
+DISTRIBUTIONS ?= $(shell echo $(notdir $(wildcard ./distributions/*)) | tr " " ",") # outputs comma separated directories names
 
 ci: check build
 check: test
