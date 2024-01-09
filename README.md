@@ -9,8 +9,7 @@ At every new version of the Collector, distributions are updated and published.
 To add a new distribution to this repository:
 
 1) create a directory under `distributions` and place the `manifest.yaml` there
-2) change the `Makefile`'s `DISTRIBUTIONS` var to include the new distribution
-3) add `./github/workflows/ci-<distribution>.yaml` and `./github/workflows/release-<distribution>.yaml` files based on one of the existing distributions
+2) add `./github/workflows/ci-<distribution>.yaml` and `./github/workflows/release-<distribution>.yaml` files based on one of the existing distributions
 
 You can test your new distribution with:
 
