@@ -2,13 +2,13 @@ dist:
   module: github.com/jpkrohling/otelcol-distributions/sidecar
   name: otelcol
   description: Sidecar distribution of the OpenTelemetry Collector
-  version: 0.94.1
+  version: 0.96.0
   output_path: ./_build
-  otelcol_version: 0.94.1
+  otelcol_version: 0.96.0
 
 extensions:
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension v0.94.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension v0.96.0
 receivers:
-  - gomod: go.opentelemetry.io/collector/receiver/otlpreceiver v0.94.1
+  - gomod: go.opentelemetry.io/collector/receiver/otlpreceiver v0.96.0
 exporters:
-  - gomod: go.opentelemetry.io/collector/exporter/otlpexporter v0.94.1
+  - gomod: go.opentelemetry.io/collector/exporter/otlpexporter v0.96.0
