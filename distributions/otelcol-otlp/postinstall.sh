@@ -14,4 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-getent passwd otelcol-sidecar >/dev/null || useradd --system --user-group --no-create-home --shell /sbin/nologin otelcol-sidecar
+if command -v systemctl >/dev/null 2>&1; then
+    systemctl enable otelcol-otlp.service
+    if [ -f /etc/otelcol-otlp/config.yaml ]; then
+        systemctl start otelcol-otlp.service
+    fi
+fi

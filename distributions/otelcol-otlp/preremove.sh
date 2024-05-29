@@ -15,6 +15,6 @@
 # limitations under the License.
 
 if command -v systemctl >/dev/null 2>&1; then
-    systemctl stop otelcol-sidecar.service
-    systemctl disable otelcol-sidecar.service
+    systemctl stop otelcol-otlp.service
+    systemctl disable otelcol-otlp.service
 fi

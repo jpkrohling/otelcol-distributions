@@ -1,4 +1,4 @@
-name: Continuous Integration - otelcol-sidecar
+name: Continuous Integration - otelcol-otlp
 
 on:
   workflow_run:
@@ -8,8 +8,8 @@ on:
 
 jobs:
   release:
-    name: Continuous Integration - otelcol-sidecar - GoReleaser
+    name: Continuous Integration - otelcol-otlp - GoReleaser
     uses: ./.github/workflows/base-goreleaser-ci.yaml
     with:
-      distribution: otelcol-sidecar
+      distribution: otelcol-otlp
     secrets: inherit

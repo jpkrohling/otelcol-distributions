@@ -1,4 +1,4 @@
-name: Release otelcol-sidecar
+name: Release otelcol-otlp
 
 on:
   release:
@@ -6,9 +6,9 @@ on:
 
 jobs:
   release:
-    name: Release otelcol-sidecar
+    name: Release otelcol-otlp
     uses: ./.github/workflows/base-release.yaml
     with:
-      distribution: otelcol-sidecar
+      distribution: otelcol-otlp
     secrets: inherit
     permissions: write-all
