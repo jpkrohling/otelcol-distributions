@@ -1,7 +1,7 @@
 dist:
-  module: github.com/jpkrohling/otelcol-distributions/otelcol-sidecar
+  module: github.com/jpkrohling/otelcol-distributions/otelcol-otlp
   name: otelcol
-  description: Sidecar distribution of the OpenTelemetry Collector
+  description: OTLP distribution of the OpenTelemetry Collector
   version: 0.101.0
   output_path: ./_build
   otelcol_version: 0.101.0
