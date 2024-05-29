@@ -9,7 +9,7 @@ done
 
 if [[ -z $distributions ]]; then
     echo "List of distributions to test not provided. Use '-d' to specify the names of the distributions to test. Ex.:"
-    echo "$0 -d sidecar,tracing"
+    echo "$0 -d otelcol-otlp,otelcol-tracing"
     exit 1
 fi
 
