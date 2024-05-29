@@ -1,32 +1,28 @@
 extensions:
-  health_check:
+  health_check: {}
+  pprof: {}
 
 receivers:
   otlp:
     protocols:
-      grpc:
+      grpc: {}
   jaeger:
     protocols:
-      thrift_binary:
-      thrift_compact:
-      grpc:
-  zipkin:
-
-processors:
+      thrift_binary: {}
+      thrift_compact: {}
+      grpc: {}
+  zipkin: {}
 
 exporters:
   otlp:
-    endpoint: example:4317 # this will fail to connect, but it shouldn't break the process
+    endpoint: otlp.example.com:4317
+  otlphttp:
+    endpoint: https://otlp.example.com/otlp
 
 service:
-  extensions: [health_check]
+  extensions: [ health_check, pprof ]
   pipelines:
     traces:
-      receivers:
-        - jaeger
-        - otlp
-        - zipkin
-      processors: []
-      exporters:
-        - otlp
-
+      receivers:  [ otlp, jaeger, zipkin ]
+      processors: [  ]
+      exporters:  [ otlp, otlphttp ]

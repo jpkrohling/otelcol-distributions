@@ -1,32 +1,28 @@
 extensions:
-  health_check:
+  health_check: {}
+  pprof: {}
 
 receivers:
   otlp:
     protocols:
-      grpc:
-
-processors:
+      grpc: {}
+  jaeger:
+    protocols:
+      thrift_binary: {}
+      thrift_compact: {}
+      grpc: {}
+  zipkin: {}
 
 exporters:
   otlp:
     endpoint: otlp.example.com:4317
+  otlphttp:
+    endpoint: https://otlp.example.com/otlp
 
 service:
+  extensions: [ health_check, pprof ]
   pipelines:
     traces:
-      receivers: [otlp]
-      processors: []
-      exporters: [otlp]
-
-    metrics:
-      receivers: [otlp]
-      processors: []
-      exporters: [otlp]
-
-    logs:
-      receivers: [otlp]
-      processors: []
-      exporters: [otlp]
-
-  extensions: [health_check]
+      receivers:  [ otlp, jaeger, zipkin ]
+      processors: [  ]
+      exporters:  [ otlp, otlphttp ]

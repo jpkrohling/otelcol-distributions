@@ -1,12 +1,11 @@
 extensions:
-  health_check:
+  health_check: {}
+  pprof: {}
 
 receivers:
   otlp:
     protocols:
-      grpc:
-
-processors:
+      grpc: {}
 
 exporters:
   loadbalancing:
@@ -17,13 +16,15 @@ exporters:
       static:
         hostnames:
         - example.com:4317
+  otlp:
+    endpoint: otlp.example.com:4317
+  otlphttp:
+    endpoint: https://otlp.example.com/otlp
 
 service:
-  extensions: [health_check]
+  extensions: [ health_check, pprof ]
   pipelines:
     traces:
-      receivers:
-        - otlp
-      processors: []
-      exporters:
-        - loadbalancing
+      receivers:  [ otlp ]
+      processors: [  ]
+      exporters:  [ otlp, otlphttp, loadbalancing ]
