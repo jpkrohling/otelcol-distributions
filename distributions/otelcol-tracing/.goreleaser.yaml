@@ -1,0 +1,135 @@
+project_name: otelcol-tracing
+builds:
+    - id: otelcol-tracing
+      goos:
+        - darwin
+        - linux
+        - windows
+      goarch:
+        - "386"
+        - amd64
+        - arm64
+        - ppc64le
+      ignore:
+        - goos: darwin
+          goarch: "386"
+        - goos: windows
+          goarch: arm64
+      dir: _build
+      binary: otelcol-tracing
+      ldflags:
+        - -s
+        - -w
+      flags:
+        - -trimpath
+      env:
+        - CGO_ENABLED=0
+archives:
+    - id: otelcol-tracing
+      builds:
+        - otelcol-tracing
+      name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}'
+nfpms:
+    - package_name: otelcol-tracing
+      contents:
+        - src: otelcol-tracing.service
+          dst: /lib/systemd/system/otelcol-tracing.service
+        - src: otelcol-tracing.conf
+          dst: /etc/otelcol-tracing/otelcol-tracing.conf
+          type: config|noreplace
+        - src: otelcol.yaml
+          dst: /etc/otelcol-tracing/config.yaml
+          type: config
+      scripts:
+        preinstall: preinstall.sh
+        postinstall: postinstall.sh
+        preremove: preremove.sh
+      id: otelcol-tracing
+      builds:
+        - otelcol-tracing
+      formats:
+        - apk
+        - deb
+        - rpm
+      maintainer: Juraci Paixão Kröhling <distributions@kroehling.de>
+      description: otelcol-tracing distribution of the OpenTelemetry Collector
+      license: Apache 2.0
+checksum:
+    name_template: '{{ .ProjectName }}_checksums.txt'
+dockers:
+    - goos: linux
+      goarch: "386"
+      dockerfile: Dockerfile
+      image_templates:
+        - ghcr.io/jpkrohling/otelcol-distributions/otelcol-tracing:{{ .Version }}-386
+      extra_files:
+        - otelcol.yaml
+      build_flag_templates:
+        - --pull
+        - --platform=linux/386
+        - --label=org.opencontainers.image.created={{.Date}}
+        - --label=org.opencontainers.image.name={{.ProjectName}}
+        - --label=org.opencontainers.image.revision={{.FullCommit}}
+        - --label=org.opencontainers.image.version={{.Version}}
+        - --label=org.opencontainers.image.source={{.GitURL}}
+      use: buildx
+    - goos: linux
+      goarch: amd64
+      dockerfile: Dockerfile
+      image_templates:
+        - ghcr.io/jpkrohling/otelcol-distributions/otelcol-tracing:{{ .Version }}-amd64
+      extra_files:
+        - otelcol.yaml
+      build_flag_templates:
+        - --pull
+        - --platform=linux/amd64
+        - --label=org.opencontainers.image.created={{.Date}}
+        - --label=org.opencontainers.image.name={{.ProjectName}}
+        - --label=org.opencontainers.image.revision={{.FullCommit}}
+        - --label=org.opencontainers.image.version={{.Version}}
+        - --label=org.opencontainers.image.source={{.GitURL}}
+      use: buildx
+    - goos: linux
+      goarch: arm64
+      dockerfile: Dockerfile
+      image_templates:
+        - ghcr.io/jpkrohling/otelcol-distributions/otelcol-tracing:{{ .Version }}-arm64
+      extra_files:
+        - otelcol.yaml
+      build_flag_templates:
+        - --pull
+        - --platform=linux/arm64
+        - --label=org.opencontainers.image.created={{.Date}}
+        - --label=org.opencontainers.image.name={{.ProjectName}}
+        - --label=org.opencontainers.image.revision={{.FullCommit}}
+        - --label=org.opencontainers.image.version={{.Version}}
+        - --label=org.opencontainers.image.source={{.GitURL}}
+      use: buildx
+    - goos: linux
+      goarch: ppc64le
+      dockerfile: Dockerfile
+      image_templates:
+        - ghcr.io/jpkrohling/otelcol-distributions/otelcol-tracing:{{ .Version }}-ppc64le
+      extra_files:
+        - otelcol.yaml
+      build_flag_templates:
+        - --pull
+        - --platform=linux/ppc64le
+        - --label=org.opencontainers.image.created={{.Date}}
+        - --label=org.opencontainers.image.name={{.ProjectName}}
+        - --label=org.opencontainers.image.revision={{.FullCommit}}
+        - --label=org.opencontainers.image.version={{.Version}}
+        - --label=org.opencontainers.image.source={{.GitURL}}
+      use: buildx
+docker_manifests:
+    - name_template: ghcr.io/jpkrohling/otelcol-distributions/otelcol-tracing:{{ .Version }}
+      image_templates:
+        - ghcr.io/jpkrohling/otelcol-distributions/otelcol-tracing:{{ .Version }}-386
+        - ghcr.io/jpkrohling/otelcol-distributions/otelcol-tracing:{{ .Version }}-amd64
+        - ghcr.io/jpkrohling/otelcol-distributions/otelcol-tracing:{{ .Version }}-arm64
+        - ghcr.io/jpkrohling/otelcol-distributions/otelcol-tracing:{{ .Version }}-ppc64le
+sboms:
+    - id: archive
+      artifacts: archive
+    - id: package
+      artifacts: package

@@ -1,0 +1,14 @@
+name: Release otelcol-tracing
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  release:
+    name: Release otelcol-tracing
+    uses: ./.github/workflows/base-release.yaml
+    with:
+      distribution: otelcol-tracing
+    secrets: inherit
+    permissions: write-all
