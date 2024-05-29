@@ -1,6 +1,6 @@
 extensions:
-  health_check:
-  pprof:
+  health_check: {}
+  pprof: {}
 
 receivers:
   otlp:

@@ -1,23 +1,22 @@
 extensions:
-  health_check:
+  health_check: {}
+  pprof: {}
 
 receivers:
   otlp:
     protocols:
-      grpc:
-
-processors:
+      grpc: {}
 
 exporters:
   otlp:
-    endpoint: example.com:4317 # this will fail, but the process shouldn't die because of it
+    endpoint: otlp.example.com:4317
+  otlphttp:
+    endpoint: https://otlp.example.com/otlp
 
 service:
-  extensions: [health_check]
+  extensions: [ health_check, pprof ]
   pipelines:
     traces:
-      receivers:
-        - otlp
-      processors: []
-      exporters:
-        - otlp
+      receivers:  [ otlp ]
+      processors: [  ]
+      exporters:  [ otlp, otlphttp ]
