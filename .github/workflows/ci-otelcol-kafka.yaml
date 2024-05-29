@@ -1,0 +1,15 @@
+name: Continuous Integration - otelcol-kafka
+
+on:
+  workflow_run:
+    workflows: [Continuous Integration]
+    types:
+      - completed
+
+jobs:
+  release:
+    name: Continuous Integration - otelcol-kafka - GoReleaser
+    uses: ./.github/workflows/base-goreleaser-ci.yaml
+    with:
+      distribution: otelcol-kafka
+    secrets: inherit

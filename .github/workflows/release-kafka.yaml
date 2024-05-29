@@ -1,0 +1,14 @@
+name: Release otelcol-kafka
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  release:
+    name: Release otelcol-kafka
+    uses: ./.github/workflows/base-release.yaml
+    with:
+      distribution: otelcol-kafka
+    secrets: inherit
+    permissions: write-all

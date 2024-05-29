@@ -1,0 +1,31 @@
+extensions:
+  health_check:
+  pprof:
+
+receivers:
+  otlp:
+    protocols:
+      grpc: {}
+  kafka:
+    protocol_version: 2.0.0
+    brokers: kafka-brokers.example.com:9092
+    topic: otlp-spans
+
+exporters:
+  kafka:
+    protocol_version: 2.0.0
+    brokers: kafka-brokers.example.com:9092
+    topic: otlp-spans
+  otlp:
+    endpoint: otlp.example.com:4317
+  otlphttp:
+    endpoint: https://otlp.example.com/otlp
+
+service:
+  extensions: [ health_check, pprof ]
+  pipelines:
+    traces:
+      receivers:  [ otlp, kafka ]
+      processors: [  ]
+      exporters:  [ otlp, otlphttp, kafka ]
+
