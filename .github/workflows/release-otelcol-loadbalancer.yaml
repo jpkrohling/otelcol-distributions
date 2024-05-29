@@ -1,0 +1,14 @@
+name: Release otelcol-loadbalancer
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  release:
+    name: Release otelcol-loadbalancer
+    uses: ./.github/workflows/base-release.yaml
+    with:
+      distribution: otelcol-loadbalancer
+    secrets: inherit
+    permissions: write-all

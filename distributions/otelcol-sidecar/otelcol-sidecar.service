@@ -1,0 +1,15 @@
+[Unit]
+Description=Sidecar distribution of the OpenTelemetry Collector
+After=network.target
+
+[Service]
+EnvironmentFile=/etc/otelcol-sidecar/otelcol-sidecar.conf
+ExecStart=/usr/bin/otelcol-sidecar $OTELCOL_OPTIONS
+KillMode=mixed
+Restart=on-failure
+Type=simple
+User=otelcol-sidecar
+Group=otelcol-sidecar
+
+[Install]
+WantedBy=multi-user.target

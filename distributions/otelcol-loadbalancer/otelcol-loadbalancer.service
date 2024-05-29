@@ -1,0 +1,15 @@
+[Unit]
+Description=Load-balancer distribution of the OpenTelemetry Collector
+After=network.target
+
+[Service]
+EnvironmentFile=/etc/otelcol-loadbalancer/otelcol-loadbalancer.conf
+ExecStart=/usr/bin/otelcol-loadbalancer $OTELCOL_OPTIONS
+KillMode=mixed
+Restart=on-failure
+Type=simple
+User=otelcol-loadbalancer
+Group=otelcol-loadbalancer
+
+[Install]
+WantedBy=multi-user.target
