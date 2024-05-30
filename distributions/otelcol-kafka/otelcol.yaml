@@ -12,6 +12,7 @@ receivers:
     topic: otlp-spans
 
 exporters:
+  nop:
   kafka:
     protocol_version: 2.0.0
     brokers: kafka-brokers.example.com:9092
@@ -27,5 +28,5 @@ service:
     traces:
       receivers:  [ otlp, kafka ]
       processors: [  ]
-      exporters:  [ otlp, otlphttp, kafka ]
+      exporters:  [ nop, otlp, otlphttp ]
 

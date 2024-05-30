@@ -17,6 +17,7 @@ receivers:
   - gomod: go.opentelemetry.io/collector/receiver/otlpreceiver v0.101.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/kafkareceiver v0.101.0
 exporters:
+  - gomod: go.opentelemetry.io/collector/exporter/nopexporter v0.101.0
   - gomod: go.opentelemetry.io/collector/exporter/otlpexporter v0.101.0
   - gomod: go.opentelemetry.io/collector/exporter/otlphttpexporter v0.101.0
   - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/kafkaexporter v0.101.0

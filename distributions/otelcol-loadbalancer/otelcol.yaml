@@ -8,6 +8,7 @@ receivers:
       grpc: {}
 
 exporters:
+  nop:
   loadbalancing:
     protocol:
       otlp:
@@ -27,4 +28,4 @@ service:
     traces:
       receivers:  [ otlp ]
       processors: [  ]
-      exporters:  [ otlp, otlphttp, loadbalancing ]
+      exporters:  [ nop, otlp, otlphttp, loadbalancing ]

@@ -14,6 +14,7 @@ receivers:
   zipkin: {}
 
 exporters:
+  nop:
   otlp:
     endpoint: otlp.example.com:4317
   otlphttp:
@@ -25,4 +26,4 @@ service:
     traces:
       receivers:  [ otlp, jaeger, zipkin ]
       processors: [  ]
-      exporters:  [ otlp, otlphttp ]
+      exporters:  [ nop, otlp, otlphttp ]
