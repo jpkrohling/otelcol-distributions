@@ -1,0 +1,15 @@
+name: Continuous Integration - otelcol-sampling
+
+on:
+  workflow_run:
+    workflows: [Continuous Integration]
+    types:
+      - completed
+
+jobs:
+  release:
+    name: Continuous Integration - otelcol-sampling - GoReleaser
+    uses: ./.github/workflows/base-goreleaser-ci.yaml
+    with:
+      distribution: otelcol-sampling
+    secrets: inherit
