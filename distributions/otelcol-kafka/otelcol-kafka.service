@@ -1,15 +1,15 @@
 [Unit]
-Description=Load-balancer distribution of the OpenTelemetry Collector
+Description=A distribution of the OpenTelemetry Collector with Kafka receiver and exporter
 After=network.target
 
 [Service]
-EnvironmentFile=/etc/loadbalancing/loadbalancing.conf
-ExecStart=/usr/bin/loadbalancing $OTELCOL_OPTIONS
+EnvironmentFile=/etc/otelcol-kafka/otelcol-kafka.conf
+ExecStart=/usr/bin/otelcol-kafka $OTELCOL_OPTIONS
 KillMode=mixed
 Restart=on-failure
 Type=simple
-User=loadbalancing
-Group=loadbalancing
+User=otelcol-kafka
+Group=otelcol-kafka
 
 [Install]
 WantedBy=multi-user.target
