@@ -1,0 +1,14 @@
+name: Release otelcol-sampling
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  release:
+    name: Release otelcol-sampling
+    uses: ./.github/workflows/base-release.yaml
+    with:
+      distribution: otelcol-sampling
+    secrets: inherit
+    permissions: write-all
