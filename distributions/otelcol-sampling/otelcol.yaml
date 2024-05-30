@@ -1,0 +1,39 @@
+extensions:
+  health_check: {}
+  pprof: {}
+
+receivers:
+  otlp:
+    protocols:
+      grpc: {}
+
+exporters:
+  nop:
+  otlp:
+    endpoint: otlp.example.com:4317
+  otlphttp:
+    endpoint: https://otlp.example.com/otlp
+
+processors:
+  tail_sampling:
+    decision_wait: 10s
+    num_traces: 100
+    expected_new_traces_per_sec: 10
+    policies:
+      [
+          {
+            name: test-policy-1,
+            type: always_sample
+          },
+      ]
+
+  probabilistic_sampler:
+    sampling_percentage: 100
+
+service:
+  extensions: [ health_check, pprof ]
+  pipelines:
+    traces:
+      receivers:  [ otlp ]
+      processors: [ probabilistic_sampler, tail_sampling ]
+      exporters:  [ nop, otlp, otlphttp ]
