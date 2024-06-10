@@ -30,7 +30,7 @@ import (
 const ArmArch = "arm"
 
 var (
-	ImagePrefixes = []string{"otel", "ghcr.io/open-telemetry/opentelemetry-collector-releases"}
+	ImagePrefixes = []string{"ghcr.io/jpkrohling/otelcol-distributions"}
 	Architectures = []string{"386", "amd64", "arm", "arm64", "ppc64le", "s390x"}
 	ArmVersions   = []string{"7"}
 )
@@ -112,7 +112,7 @@ func WinPackages(dist string) []config.MSI {
 // https://goreleaser.com/customization/msi/
 func WinPackage(dist string) config.MSI {
 	return config.MSI{
-		ID:      dist,
+		ID:   dist,
 		Name: fmt.Sprintf("%s_{{ .Version }}_{{ .Os }}_{{ .MsiArch }}", dist),
 		WXS:  "windows-installer.wxs",
 		Files: []string{
