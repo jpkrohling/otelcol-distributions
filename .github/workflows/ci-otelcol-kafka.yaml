@@ -1,15 +1,33 @@
 name: Continuous Integration - otelcol-kafka
 
 on:
-  workflow_run:
-    workflows: [Continuous Integration]
-    types:
-      - completed
+  push:
+    branches: [main]
+    paths:
+      - "distributions/otelcol-kafka/**"
+      - "cmd/**"
+      - ".github/**"
+      - "scripts/**"
+      - "Makefile"
+      - "go.mod"
+      - "go.sum"
+  pull_request:
+    branches: [main]
+    paths:
+      - "distributions/otelcol-kafka/**"
+      - "cmd/**"
+      - ".github/**"
+      - "scripts/**"
+      - "Makefile"
+      - "go.mod"
+      - "go.sum"
 
 jobs:
-  release:
-    name: Continuous Integration - otelcol-kafka - GoReleaser
-    uses: ./.github/workflows/base-goreleaser-ci.yaml
+  check-goreleaser:
+    name: Continuous Integration - Contrib - GoReleaser
+    uses: ./.github/workflows/base-ci-goreleaser.yaml
     with:
       distribution: otelcol-kafka
+      goos: '[ "linux", "windows", "darwin" ]'
+      goarch: '[ "386", "amd64", "arm64", "ppc64le", "arm", "s390x" ]'
     secrets: inherit

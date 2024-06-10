@@ -1,15 +1,33 @@
 name: Continuous Integration - otelcol-loadbalancer
 
 on:
-  workflow_run:
-    workflows: [Continuous Integration]
-    types:
-      - completed
+  push:
+    branches: [main]
+    paths:
+      - "distributions/otelcol-loadbalancer/**"
+      - "cmd/**"
+      - ".github/**"
+      - "scripts/**"
+      - "Makefile"
+      - "go.mod"
+      - "go.sum"
+  pull_request:
+    branches: [main]
+    paths:
+      - "distributions/otelcol-loadbalancer/**"
+      - "cmd/**"
+      - ".github/**"
+      - "scripts/**"
+      - "Makefile"
+      - "go.mod"
+      - "go.sum"
 
 jobs:
-  release:
-    name: Continuous Integration - otelcol-loadbalancer - GoReleaser
-    uses: ./.github/workflows/base-goreleaser-ci.yaml
+  check-goreleaser:
+    name: Continuous Integration - Contrib - GoReleaser
+    uses: ./.github/workflows/base-ci-goreleaser.yaml
     with:
       distribution: otelcol-loadbalancer
+      goos: '[ "linux", "windows", "darwin" ]'
+      goarch: '[ "386", "amd64", "arm64", "ppc64le", "arm", "s390x" ]'
     secrets: inherit

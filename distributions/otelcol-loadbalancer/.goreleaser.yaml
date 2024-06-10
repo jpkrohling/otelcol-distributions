@@ -1,135 +1,258 @@
-project_name: otelcol-loadbalancer
+partial:
+  by: target
+project_name: opentelemetry-collector-releases
+env:
+  - COSIGN_YES=true
+msi:
+  - id: otelcol-loadbalancer
+    name: otelcol-loadbalancer_{{ .Version }}_{{ .Os }}_{{ .MsiArch }}
+    wxs: windows-installer.wxs
+    extra_files:
+      - config.yaml
+      - opentelemetry.ico
 builds:
-    - id: otelcol-loadbalancer
-      goos:
-        - darwin
-        - linux
-        - windows
-      goarch:
-        - "386"
-        - amd64
-        - arm64
-        - ppc64le
-      ignore:
-        - goos: darwin
-          goarch: "386"
-        - goos: windows
-          goarch: arm64
-      dir: _build
-      binary: otelcol-loadbalancer
-      ldflags:
-        - -s
-        - -w
-      flags:
-        - -trimpath
-      env:
-        - CGO_ENABLED=0
+  - id: otelcol-loadbalancer
+    goos:
+      - darwin
+      - linux
+      - windows
+    goarch:
+      - "386"
+      - amd64
+      - arm
+      - arm64
+      - ppc64le
+      - s390x
+    goarm:
+      - "7"
+    ignore:
+      - goos: darwin
+        goarch: "386"
+      - goos: darwin
+        goarch: arm
+      - goos: darwin
+        goarch: s390x
+      - goos: windows
+        goarch: arm
+      - goos: windows
+        goarch: arm64
+      - goos: windows
+        goarch: s390x
+    dir: _build
+    binary: otelcol-loadbalancer
+    ldflags:
+      - -s
+      - -w
+    flags:
+      - -trimpath
+    env:
+      - CGO_ENABLED=0
 archives:
-    - id: otelcol-loadbalancer
-      builds:
-        - otelcol-loadbalancer
-      name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}'
+  - id: otelcol-loadbalancer
+    builds:
+      - otelcol-loadbalancer
+    name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}'
 nfpms:
-    - package_name: otelcol-loadbalancer
-      contents:
-        - src: otelcol-loadbalancer.service
-          dst: /lib/systemd/system/otelcol-loadbalancer.service
-        - src: otelcol-loadbalancer.conf
-          dst: /etc/otelcol-loadbalancer/otelcol-loadbalancer.conf
-          type: config|noreplace
-        - src: otelcol.yaml
-          dst: /etc/otelcol-loadbalancer/config.yaml
-          type: config
-      scripts:
-        preinstall: preinstall.sh
-        postinstall: postinstall.sh
-        preremove: preremove.sh
-      id: otelcol-loadbalancer
-      builds:
-        - otelcol-loadbalancer
-      formats:
-        - apk
-        - deb
-        - rpm
-      maintainer: Juraci Paixão Kröhling <distributions@kroehling.de>
-      description: otelcol-loadbalancer distribution of the OpenTelemetry Collector
-      license: Apache 2.0
+  - package_name: otelcol-loadbalancer
+    contents:
+      - src: otelcol-loadbalancer.service
+        dst: /lib/systemd/system/otelcol-loadbalancer.service
+      - src: otelcol-loadbalancer.conf
+        dst: /etc/otelcol-loadbalancer/otelcol-loadbalancer.conf
+        type: config|noreplace
+      - src: config.yaml
+        dst: /etc/otelcol-loadbalancer/config.yaml
+        type: config|noreplace
+    scripts:
+      preinstall: preinstall.sh
+      postinstall: postinstall.sh
+      preremove: preremove.sh
+    id: otelcol-loadbalancer
+    builds:
+      - otelcol-loadbalancer
+    formats:
+      - apk
+      - deb
+      - rpm
+    maintainer: The OpenTelemetry Collector maintainers <cncf-opentelemetry-maintainers@lists.cncf.io>
+    description: OpenTelemetry Collector - otelcol-loadbalancer
+    license: Apache 2.0
 checksum:
-    name_template: '{{ .ProjectName }}_checksums.txt'
+  name_template: '{{ .ProjectName }}_otelcol-loadbalancer_checksums.txt'
 dockers:
-    - goos: linux
-      goarch: "386"
-      dockerfile: Dockerfile
-      image_templates:
-        - ghcr.io/jpkrohling/otelcol-distributions/otelcol-loadbalancer:{{ .Version }}-386
-      extra_files:
-        - otelcol.yaml
-      build_flag_templates:
-        - --pull
-        - --platform=linux/386
-        - --label=org.opencontainers.image.created={{.Date}}
-        - --label=org.opencontainers.image.name={{.ProjectName}}
-        - --label=org.opencontainers.image.revision={{.FullCommit}}
-        - --label=org.opencontainers.image.version={{.Version}}
-        - --label=org.opencontainers.image.source={{.GitURL}}
-      use: buildx
-    - goos: linux
-      goarch: amd64
-      dockerfile: Dockerfile
-      image_templates:
-        - ghcr.io/jpkrohling/otelcol-distributions/otelcol-loadbalancer:{{ .Version }}-amd64
-      extra_files:
-        - otelcol.yaml
-      build_flag_templates:
-        - --pull
-        - --platform=linux/amd64
-        - --label=org.opencontainers.image.created={{.Date}}
-        - --label=org.opencontainers.image.name={{.ProjectName}}
-        - --label=org.opencontainers.image.revision={{.FullCommit}}
-        - --label=org.opencontainers.image.version={{.Version}}
-        - --label=org.opencontainers.image.source={{.GitURL}}
-      use: buildx
-    - goos: linux
-      goarch: arm64
-      dockerfile: Dockerfile
-      image_templates:
-        - ghcr.io/jpkrohling/otelcol-distributions/otelcol-loadbalancer:{{ .Version }}-arm64
-      extra_files:
-        - otelcol.yaml
-      build_flag_templates:
-        - --pull
-        - --platform=linux/arm64
-        - --label=org.opencontainers.image.created={{.Date}}
-        - --label=org.opencontainers.image.name={{.ProjectName}}
-        - --label=org.opencontainers.image.revision={{.FullCommit}}
-        - --label=org.opencontainers.image.version={{.Version}}
-        - --label=org.opencontainers.image.source={{.GitURL}}
-      use: buildx
-    - goos: linux
-      goarch: ppc64le
-      dockerfile: Dockerfile
-      image_templates:
-        - ghcr.io/jpkrohling/otelcol-distributions/otelcol-loadbalancer:{{ .Version }}-ppc64le
-      extra_files:
-        - otelcol.yaml
-      build_flag_templates:
-        - --pull
-        - --platform=linux/ppc64le
-        - --label=org.opencontainers.image.created={{.Date}}
-        - --label=org.opencontainers.image.name={{.ProjectName}}
-        - --label=org.opencontainers.image.revision={{.FullCommit}}
-        - --label=org.opencontainers.image.version={{.Version}}
-        - --label=org.opencontainers.image.source={{.GitURL}}
-      use: buildx
+  - goos: linux
+    goarch: "386"
+    dockerfile: Dockerfile
+    image_templates:
+      - otel/opentelemetry-collector-loadbalancer:{{ .Version }}-386
+      - otel/opentelemetry-collector-loadbalancer:latest-386
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-loadbalancer:{{ .Version }}-386
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-loadbalancer:latest-386
+    extra_files:
+      - config.yaml
+    build_flag_templates:
+      - --pull
+      - --platform=linux/386
+      - --label=org.opencontainers.image.created={{.Date}}
+      - --label=org.opencontainers.image.name={{.ProjectName}}
+      - --label=org.opencontainers.image.revision={{.FullCommit}}
+      - --label=org.opencontainers.image.version={{.Version}}
+      - --label=org.opencontainers.image.source={{.GitURL}}
+      - --label=org.opencontainers.image.licenses=Apache-2.0
+    use: buildx
+  - goos: linux
+    goarch: amd64
+    dockerfile: Dockerfile
+    image_templates:
+      - otel/opentelemetry-collector-loadbalancer:{{ .Version }}-amd64
+      - otel/opentelemetry-collector-loadbalancer:latest-amd64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-loadbalancer:{{ .Version }}-amd64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-loadbalancer:latest-amd64
+    extra_files:
+      - config.yaml
+    build_flag_templates:
+      - --pull
+      - --platform=linux/amd64
+      - --label=org.opencontainers.image.created={{.Date}}
+      - --label=org.opencontainers.image.name={{.ProjectName}}
+      - --label=org.opencontainers.image.revision={{.FullCommit}}
+      - --label=org.opencontainers.image.version={{.Version}}
+      - --label=org.opencontainers.image.source={{.GitURL}}
+      - --label=org.opencontainers.image.licenses=Apache-2.0
+    use: buildx
+  - goos: linux
+    goarch: arm
+    goarm: "7"
+    dockerfile: Dockerfile
+    image_templates:
+      - otel/opentelemetry-collector-loadbalancer:{{ .Version }}-armv7
+      - otel/opentelemetry-collector-loadbalancer:latest-armv7
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-loadbalancer:{{ .Version }}-armv7
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-loadbalancer:latest-armv7
+    extra_files:
+      - config.yaml
+    build_flag_templates:
+      - --pull
+      - --platform=linux/arm/v7
+      - --label=org.opencontainers.image.created={{.Date}}
+      - --label=org.opencontainers.image.name={{.ProjectName}}
+      - --label=org.opencontainers.image.revision={{.FullCommit}}
+      - --label=org.opencontainers.image.version={{.Version}}
+      - --label=org.opencontainers.image.source={{.GitURL}}
+      - --label=org.opencontainers.image.licenses=Apache-2.0
+    use: buildx
+  - goos: linux
+    goarch: arm64
+    dockerfile: Dockerfile
+    image_templates:
+      - otel/opentelemetry-collector-loadbalancer:{{ .Version }}-arm64
+      - otel/opentelemetry-collector-loadbalancer:latest-arm64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-loadbalancer:{{ .Version }}-arm64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-loadbalancer:latest-arm64
+    extra_files:
+      - config.yaml
+    build_flag_templates:
+      - --pull
+      - --platform=linux/arm64
+      - --label=org.opencontainers.image.created={{.Date}}
+      - --label=org.opencontainers.image.name={{.ProjectName}}
+      - --label=org.opencontainers.image.revision={{.FullCommit}}
+      - --label=org.opencontainers.image.version={{.Version}}
+      - --label=org.opencontainers.image.source={{.GitURL}}
+      - --label=org.opencontainers.image.licenses=Apache-2.0
+    use: buildx
+  - goos: linux
+    goarch: ppc64le
+    dockerfile: Dockerfile
+    image_templates:
+      - otel/opentelemetry-collector-loadbalancer:{{ .Version }}-ppc64le
+      - otel/opentelemetry-collector-loadbalancer:latest-ppc64le
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-loadbalancer:{{ .Version }}-ppc64le
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-loadbalancer:latest-ppc64le
+    extra_files:
+      - config.yaml
+    build_flag_templates:
+      - --pull
+      - --platform=linux/ppc64le
+      - --label=org.opencontainers.image.created={{.Date}}
+      - --label=org.opencontainers.image.name={{.ProjectName}}
+      - --label=org.opencontainers.image.revision={{.FullCommit}}
+      - --label=org.opencontainers.image.version={{.Version}}
+      - --label=org.opencontainers.image.source={{.GitURL}}
+      - --label=org.opencontainers.image.licenses=Apache-2.0
+    use: buildx
+  - goos: linux
+    goarch: s390x
+    dockerfile: Dockerfile
+    image_templates:
+      - otel/opentelemetry-collector-loadbalancer:{{ .Version }}-s390x
+      - otel/opentelemetry-collector-loadbalancer:latest-s390x
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-loadbalancer:{{ .Version }}-s390x
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-loadbalancer:latest-s390x
+    extra_files:
+      - config.yaml
+    build_flag_templates:
+      - --pull
+      - --platform=linux/s390x
+      - --label=org.opencontainers.image.created={{.Date}}
+      - --label=org.opencontainers.image.name={{.ProjectName}}
+      - --label=org.opencontainers.image.revision={{.FullCommit}}
+      - --label=org.opencontainers.image.version={{.Version}}
+      - --label=org.opencontainers.image.source={{.GitURL}}
+      - --label=org.opencontainers.image.licenses=Apache-2.0
+    use: buildx
 docker_manifests:
-    - name_template: ghcr.io/jpkrohling/otelcol-distributions/otelcol-loadbalancer:{{ .Version }}
-      image_templates:
-        - ghcr.io/jpkrohling/otelcol-distributions/otelcol-loadbalancer:{{ .Version }}-386
-        - ghcr.io/jpkrohling/otelcol-distributions/otelcol-loadbalancer:{{ .Version }}-amd64
-        - ghcr.io/jpkrohling/otelcol-distributions/otelcol-loadbalancer:{{ .Version }}-arm64
-        - ghcr.io/jpkrohling/otelcol-distributions/otelcol-loadbalancer:{{ .Version }}-ppc64le
+  - name_template: otel/opentelemetry-collector-loadbalancer:{{ .Version }}
+    image_templates:
+      - otel/opentelemetry-collector-loadbalancer:{{ .Version }}-386
+      - otel/opentelemetry-collector-loadbalancer:{{ .Version }}-amd64
+      - otel/opentelemetry-collector-loadbalancer:{{ .Version }}-armv7
+      - otel/opentelemetry-collector-loadbalancer:{{ .Version }}-arm64
+      - otel/opentelemetry-collector-loadbalancer:{{ .Version }}-ppc64le
+      - otel/opentelemetry-collector-loadbalancer:{{ .Version }}-s390x
+  - name_template: otel/opentelemetry-collector-loadbalancer:latest
+    image_templates:
+      - otel/opentelemetry-collector-loadbalancer:latest-386
+      - otel/opentelemetry-collector-loadbalancer:latest-amd64
+      - otel/opentelemetry-collector-loadbalancer:latest-armv7
+      - otel/opentelemetry-collector-loadbalancer:latest-arm64
+      - otel/opentelemetry-collector-loadbalancer:latest-ppc64le
+      - otel/opentelemetry-collector-loadbalancer:latest-s390x
+  - name_template: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-loadbalancer:{{ .Version }}
+    image_templates:
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-loadbalancer:{{ .Version }}-386
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-loadbalancer:{{ .Version }}-amd64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-loadbalancer:{{ .Version }}-armv7
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-loadbalancer:{{ .Version }}-arm64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-loadbalancer:{{ .Version }}-ppc64le
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-loadbalancer:{{ .Version }}-s390x
+  - name_template: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-loadbalancer:latest
+    image_templates:
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-loadbalancer:latest-386
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-loadbalancer:latest-amd64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-loadbalancer:latest-armv7
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-loadbalancer:latest-arm64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-loadbalancer:latest-ppc64le
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-loadbalancer:latest-s390x
+signs:
+  - cmd: cosign
+    args:
+      - sign-blob
+      - --output-signature
+      - ${artifact}.sig
+      - --output-certificate
+      - ${artifact}.pem
+      - ${artifact}
+    signature: ${artifact}.sig
+    artifacts: all
+    certificate: ${artifact}.pem
+docker_signs:
+  - args:
+      - sign
+      - ${artifact}
+    artifacts: all
 sboms:
-    - id: archive
-      artifacts: archive
-    - id: package
-      artifacts: package
+  - id: archive
+    artifacts: archive
+  - id: package
+    artifacts: package

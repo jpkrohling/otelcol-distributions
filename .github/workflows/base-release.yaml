@@ -6,49 +6,158 @@ on:
       distribution:
         required: true
         type: string
+      goos:
+        required: true
+        type: string
+      goarch:
+        required: true
+        type: string
 
 jobs:
-  release:
-    name: Release ${{ inputs.distribution }}
-    environment: release
+  prepare:
+    strategy:
+      matrix:
+        GOOS: ${{ fromJSON( inputs.goos) }}
+        GOARCH: ${{ fromJSON( inputs.goarch) }}
+        exclude:
+          - GOOS: darwin
+            GOARCH: "386"
+          - GOOS: darwin
+            GOARCH: s390x
+          - GOOS: windows
+            GOARCH: arm64
+          - GOOS: darwin
+            GOARCH: arm
+          - GOOS: windows
+            GOARCH: arm
+          - GOOS: windows
+            GOARCH: s390x
     runs-on: ubuntu-22.04
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
         with:
           fetch-depth: 0
 
-      - name: Setup QEMU
-        uses: docker/setup-qemu-action@v3
+      - uses: sigstore/cosign-installer@59acb6260d9c0ba8f4a2f9d9b48431a222b68e20 # v3.5.0
+
+      - uses: anchore/sbom-action/download-syft@e8d2a6937ecead383dfe75190d104edd1f9c5751 # v0.16.0
+
+      - uses: docker/setup-qemu-action@68827325e0b33c7199eb31dd4e31fbe9023e06e3 # v3.0.0
         with:
-          platforms: arm64,ppc64le
+          platforms: arm64,ppc64le,linux/arm/v7,s390x
 
-      - name: Setup Docker Buildx
-        uses: docker/setup-buildx-action@v3
+      - uses: docker/setup-buildx-action@d70bba72b1f3fd22344832f00baa16ece964efeb # v3.3.0
 
-      - name: Setup Go
-        uses: actions/setup-go@v5
+      - uses: actions/setup-go@cdcb36043654635271a94b9a6d1392de5bb323a7 # v5.0.1
         with:
-          go-version: 1.21
+          go-version: '1.22'
+          check-latest: true
 
-      - uses: anchore/sbom-action/download-syft@v0.16.0
+      - name: Setup wixl # Required to build MSI packages for Windows
+        if: ${{ matrix.GOOS }} == 'windows' && (${{ matrix.GOARCH }} == '386' || ${{ matrix.GOARCH }} == 'amd64')
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wixl
 
       - name: Generate distribution sources
         run: make generate-sources
 
+      - name: Log into Docker.io
+        uses: docker/login-action@0d4c9c5ea7693da7b068278f7b52bda2a190a446 # v3.2.0
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
       - name: Login to GitHub Package Registry
-        uses: docker/login-action@v3
+        uses: docker/login-action@0d4c9c5ea7693da7b068278f7b52bda2a190a446 # v3.2.0
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v6
+      - shell: bash
+        run: |
+          echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+      - uses: goreleaser/goreleaser-action@286f3b13b1b49da4ac219696163fb8c1c93e1200 # v6.0.0
         with:
+          distribution: goreleaser-pro
           version: latest
           workdir: distributions/${{ inputs.distribution }}
-          args: release --clean --timeout 2h
+          args: release --clean --split --timeout 2h --release-header-tmpl=../../.github/release-template.md
+        env:
+          GOOS: ${{ matrix.GOOS }}
+          GOARCH: ${{ matrix.GOARCH }}
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+          COSIGN_YES: true
+          GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
+
+      - uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
+        with:
+          name: artifacts-${{ inputs.distribution }}-${{ matrix.GOOS }}-${{ matrix.GOARCH }}
+          path: distributions/${{ inputs.distribution }}/dist/**/*
+          if-no-files-found: error
+
+  release:
+    name: ${{ inputs.distribution }} Release
+    runs-on: ubuntu-22.04
+    needs: prepare
+
+    permissions:
+      id-token: write
+      packages: write
+      contents: write
+
+    steps:
+      - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
+        with:
+          fetch-depth: 0
+
+      - uses: sigstore/cosign-installer@59acb6260d9c0ba8f4a2f9d9b48431a222b68e20 # v3.5.0
+
+      - uses: anchore/sbom-action/download-syft@e8d2a6937ecead383dfe75190d104edd1f9c5751 # v0.16.0
+
+      - uses: docker/setup-qemu-action@68827325e0b33c7199eb31dd4e31fbe9023e06e3 # v3.0.0
+        with:
+          platforms: arm64,ppc64le,s390x
+
+      - uses: docker/setup-buildx-action@d70bba72b1f3fd22344832f00baa16ece964efeb # v3.3.0
+
+      - uses: actions/setup-go@cdcb36043654635271a94b9a6d1392de5bb323a7 # v5.0.1
+        with:
+          go-version: '1.22'
+          check-latest: true
+
+      - uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # v4.1.7
+        with:
+          pattern: artifacts-${{ inputs.distribution }}-*
+          path: distributions/${{ inputs.distribution }}/dist
+          merge-multiple: true
+
+      - name: Display structure of downloaded files
+        run: ls -R distributions/${{ inputs.distribution }}/dist
+
+      - name: Log into Docker.io
+        uses: docker/login-action@0d4c9c5ea7693da7b068278f7b52bda2a190a446 # v3.2.0
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Login to GitHub Package Registry
+        uses: docker/login-action@0d4c9c5ea7693da7b068278f7b52bda2a190a446 # v3.2.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: goreleaser/goreleaser-action@286f3b13b1b49da4ac219696163fb8c1c93e1200 # v6.0.0
+        with:
+          distribution: goreleaser-pro
+          version: latest
+          workdir: distributions/${{ inputs.distribution }}
+          args: continue --merge --timeout 2h
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COSIGN_YES: true
+          GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}

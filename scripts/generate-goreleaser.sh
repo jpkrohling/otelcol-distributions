@@ -22,5 +22,5 @@ echo "Distributions to generate: $distributions";
 
 for distribution in $(echo "$distributions" | tr "," "\n")
 do
-    ${GO} run -tags releaser goreleaser/main.go -d "${distribution}" > ./distributions/${distribution}/.goreleaser.yaml
+    ${GO} run -tags releaser cmd/goreleaser/main.go -d "${distribution}" > ./distributions/${distribution}/.goreleaser.yaml
 done

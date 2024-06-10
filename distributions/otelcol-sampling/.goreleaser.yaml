@@ -1,135 +1,258 @@
-project_name: otelcol-sampling
+partial:
+  by: target
+project_name: opentelemetry-collector-releases
+env:
+  - COSIGN_YES=true
+msi:
+  - id: otelcol-sampling
+    name: otelcol-sampling_{{ .Version }}_{{ .Os }}_{{ .MsiArch }}
+    wxs: windows-installer.wxs
+    extra_files:
+      - config.yaml
+      - opentelemetry.ico
 builds:
-    - id: otelcol-sampling
-      goos:
-        - darwin
-        - linux
-        - windows
-      goarch:
-        - "386"
-        - amd64
-        - arm64
-        - ppc64le
-      ignore:
-        - goos: darwin
-          goarch: "386"
-        - goos: windows
-          goarch: arm64
-      dir: _build
-      binary: otelcol-sampling
-      ldflags:
-        - -s
-        - -w
-      flags:
-        - -trimpath
-      env:
-        - CGO_ENABLED=0
+  - id: otelcol-sampling
+    goos:
+      - darwin
+      - linux
+      - windows
+    goarch:
+      - "386"
+      - amd64
+      - arm
+      - arm64
+      - ppc64le
+      - s390x
+    goarm:
+      - "7"
+    ignore:
+      - goos: darwin
+        goarch: "386"
+      - goos: darwin
+        goarch: arm
+      - goos: darwin
+        goarch: s390x
+      - goos: windows
+        goarch: arm
+      - goos: windows
+        goarch: arm64
+      - goos: windows
+        goarch: s390x
+    dir: _build
+    binary: otelcol-sampling
+    ldflags:
+      - -s
+      - -w
+    flags:
+      - -trimpath
+    env:
+      - CGO_ENABLED=0
 archives:
-    - id: otelcol-sampling
-      builds:
-        - otelcol-sampling
-      name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}'
+  - id: otelcol-sampling
+    builds:
+      - otelcol-sampling
+    name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}'
 nfpms:
-    - package_name: otelcol-sampling
-      contents:
-        - src: otelcol-sampling.service
-          dst: /lib/systemd/system/otelcol-sampling.service
-        - src: otelcol-sampling.conf
-          dst: /etc/otelcol-sampling/otelcol-sampling.conf
-          type: config|noreplace
-        - src: otelcol.yaml
-          dst: /etc/otelcol-sampling/config.yaml
-          type: config
-      scripts:
-        preinstall: preinstall.sh
-        postinstall: postinstall.sh
-        preremove: preremove.sh
-      id: otelcol-sampling
-      builds:
-        - otelcol-sampling
-      formats:
-        - apk
-        - deb
-        - rpm
-      maintainer: Juraci Paixão Kröhling <distributions@kroehling.de>
-      description: otelcol-sampling distribution of the OpenTelemetry Collector
-      license: Apache 2.0
+  - package_name: otelcol-sampling
+    contents:
+      - src: otelcol-sampling.service
+        dst: /lib/systemd/system/otelcol-sampling.service
+      - src: otelcol-sampling.conf
+        dst: /etc/otelcol-sampling/otelcol-sampling.conf
+        type: config|noreplace
+      - src: config.yaml
+        dst: /etc/otelcol-sampling/config.yaml
+        type: config|noreplace
+    scripts:
+      preinstall: preinstall.sh
+      postinstall: postinstall.sh
+      preremove: preremove.sh
+    id: otelcol-sampling
+    builds:
+      - otelcol-sampling
+    formats:
+      - apk
+      - deb
+      - rpm
+    maintainer: The OpenTelemetry Collector maintainers <cncf-opentelemetry-maintainers@lists.cncf.io>
+    description: OpenTelemetry Collector - otelcol-sampling
+    license: Apache 2.0
 checksum:
-    name_template: '{{ .ProjectName }}_checksums.txt'
+  name_template: '{{ .ProjectName }}_otelcol-sampling_checksums.txt'
 dockers:
-    - goos: linux
-      goarch: "386"
-      dockerfile: Dockerfile
-      image_templates:
-        - ghcr.io/jpkrohling/otelcol-distributions/otelcol-sampling:{{ .Version }}-386
-      extra_files:
-        - otelcol.yaml
-      build_flag_templates:
-        - --pull
-        - --platform=linux/386
-        - --label=org.opencontainers.image.created={{.Date}}
-        - --label=org.opencontainers.image.name={{.ProjectName}}
-        - --label=org.opencontainers.image.revision={{.FullCommit}}
-        - --label=org.opencontainers.image.version={{.Version}}
-        - --label=org.opencontainers.image.source={{.GitURL}}
-      use: buildx
-    - goos: linux
-      goarch: amd64
-      dockerfile: Dockerfile
-      image_templates:
-        - ghcr.io/jpkrohling/otelcol-distributions/otelcol-sampling:{{ .Version }}-amd64
-      extra_files:
-        - otelcol.yaml
-      build_flag_templates:
-        - --pull
-        - --platform=linux/amd64
-        - --label=org.opencontainers.image.created={{.Date}}
-        - --label=org.opencontainers.image.name={{.ProjectName}}
-        - --label=org.opencontainers.image.revision={{.FullCommit}}
-        - --label=org.opencontainers.image.version={{.Version}}
-        - --label=org.opencontainers.image.source={{.GitURL}}
-      use: buildx
-    - goos: linux
-      goarch: arm64
-      dockerfile: Dockerfile
-      image_templates:
-        - ghcr.io/jpkrohling/otelcol-distributions/otelcol-sampling:{{ .Version }}-arm64
-      extra_files:
-        - otelcol.yaml
-      build_flag_templates:
-        - --pull
-        - --platform=linux/arm64
-        - --label=org.opencontainers.image.created={{.Date}}
-        - --label=org.opencontainers.image.name={{.ProjectName}}
-        - --label=org.opencontainers.image.revision={{.FullCommit}}
-        - --label=org.opencontainers.image.version={{.Version}}
-        - --label=org.opencontainers.image.source={{.GitURL}}
-      use: buildx
-    - goos: linux
-      goarch: ppc64le
-      dockerfile: Dockerfile
-      image_templates:
-        - ghcr.io/jpkrohling/otelcol-distributions/otelcol-sampling:{{ .Version }}-ppc64le
-      extra_files:
-        - otelcol.yaml
-      build_flag_templates:
-        - --pull
-        - --platform=linux/ppc64le
-        - --label=org.opencontainers.image.created={{.Date}}
-        - --label=org.opencontainers.image.name={{.ProjectName}}
-        - --label=org.opencontainers.image.revision={{.FullCommit}}
-        - --label=org.opencontainers.image.version={{.Version}}
-        - --label=org.opencontainers.image.source={{.GitURL}}
-      use: buildx
+  - goos: linux
+    goarch: "386"
+    dockerfile: Dockerfile
+    image_templates:
+      - otel/opentelemetry-collector-sampling:{{ .Version }}-386
+      - otel/opentelemetry-collector-sampling:latest-386
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-sampling:{{ .Version }}-386
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-sampling:latest-386
+    extra_files:
+      - config.yaml
+    build_flag_templates:
+      - --pull
+      - --platform=linux/386
+      - --label=org.opencontainers.image.created={{.Date}}
+      - --label=org.opencontainers.image.name={{.ProjectName}}
+      - --label=org.opencontainers.image.revision={{.FullCommit}}
+      - --label=org.opencontainers.image.version={{.Version}}
+      - --label=org.opencontainers.image.source={{.GitURL}}
+      - --label=org.opencontainers.image.licenses=Apache-2.0
+    use: buildx
+  - goos: linux
+    goarch: amd64
+    dockerfile: Dockerfile
+    image_templates:
+      - otel/opentelemetry-collector-sampling:{{ .Version }}-amd64
+      - otel/opentelemetry-collector-sampling:latest-amd64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-sampling:{{ .Version }}-amd64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-sampling:latest-amd64
+    extra_files:
+      - config.yaml
+    build_flag_templates:
+      - --pull
+      - --platform=linux/amd64
+      - --label=org.opencontainers.image.created={{.Date}}
+      - --label=org.opencontainers.image.name={{.ProjectName}}
+      - --label=org.opencontainers.image.revision={{.FullCommit}}
+      - --label=org.opencontainers.image.version={{.Version}}
+      - --label=org.opencontainers.image.source={{.GitURL}}
+      - --label=org.opencontainers.image.licenses=Apache-2.0
+    use: buildx
+  - goos: linux
+    goarch: arm
+    goarm: "7"
+    dockerfile: Dockerfile
+    image_templates:
+      - otel/opentelemetry-collector-sampling:{{ .Version }}-armv7
+      - otel/opentelemetry-collector-sampling:latest-armv7
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-sampling:{{ .Version }}-armv7
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-sampling:latest-armv7
+    extra_files:
+      - config.yaml
+    build_flag_templates:
+      - --pull
+      - --platform=linux/arm/v7
+      - --label=org.opencontainers.image.created={{.Date}}
+      - --label=org.opencontainers.image.name={{.ProjectName}}
+      - --label=org.opencontainers.image.revision={{.FullCommit}}
+      - --label=org.opencontainers.image.version={{.Version}}
+      - --label=org.opencontainers.image.source={{.GitURL}}
+      - --label=org.opencontainers.image.licenses=Apache-2.0
+    use: buildx
+  - goos: linux
+    goarch: arm64
+    dockerfile: Dockerfile
+    image_templates:
+      - otel/opentelemetry-collector-sampling:{{ .Version }}-arm64
+      - otel/opentelemetry-collector-sampling:latest-arm64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-sampling:{{ .Version }}-arm64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-sampling:latest-arm64
+    extra_files:
+      - config.yaml
+    build_flag_templates:
+      - --pull
+      - --platform=linux/arm64
+      - --label=org.opencontainers.image.created={{.Date}}
+      - --label=org.opencontainers.image.name={{.ProjectName}}
+      - --label=org.opencontainers.image.revision={{.FullCommit}}
+      - --label=org.opencontainers.image.version={{.Version}}
+      - --label=org.opencontainers.image.source={{.GitURL}}
+      - --label=org.opencontainers.image.licenses=Apache-2.0
+    use: buildx
+  - goos: linux
+    goarch: ppc64le
+    dockerfile: Dockerfile
+    image_templates:
+      - otel/opentelemetry-collector-sampling:{{ .Version }}-ppc64le
+      - otel/opentelemetry-collector-sampling:latest-ppc64le
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-sampling:{{ .Version }}-ppc64le
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-sampling:latest-ppc64le
+    extra_files:
+      - config.yaml
+    build_flag_templates:
+      - --pull
+      - --platform=linux/ppc64le
+      - --label=org.opencontainers.image.created={{.Date}}
+      - --label=org.opencontainers.image.name={{.ProjectName}}
+      - --label=org.opencontainers.image.revision={{.FullCommit}}
+      - --label=org.opencontainers.image.version={{.Version}}
+      - --label=org.opencontainers.image.source={{.GitURL}}
+      - --label=org.opencontainers.image.licenses=Apache-2.0
+    use: buildx
+  - goos: linux
+    goarch: s390x
+    dockerfile: Dockerfile
+    image_templates:
+      - otel/opentelemetry-collector-sampling:{{ .Version }}-s390x
+      - otel/opentelemetry-collector-sampling:latest-s390x
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-sampling:{{ .Version }}-s390x
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-sampling:latest-s390x
+    extra_files:
+      - config.yaml
+    build_flag_templates:
+      - --pull
+      - --platform=linux/s390x
+      - --label=org.opencontainers.image.created={{.Date}}
+      - --label=org.opencontainers.image.name={{.ProjectName}}
+      - --label=org.opencontainers.image.revision={{.FullCommit}}
+      - --label=org.opencontainers.image.version={{.Version}}
+      - --label=org.opencontainers.image.source={{.GitURL}}
+      - --label=org.opencontainers.image.licenses=Apache-2.0
+    use: buildx
 docker_manifests:
-    - name_template: ghcr.io/jpkrohling/otelcol-distributions/otelcol-sampling:{{ .Version }}
-      image_templates:
-        - ghcr.io/jpkrohling/otelcol-distributions/otelcol-sampling:{{ .Version }}-386
-        - ghcr.io/jpkrohling/otelcol-distributions/otelcol-sampling:{{ .Version }}-amd64
-        - ghcr.io/jpkrohling/otelcol-distributions/otelcol-sampling:{{ .Version }}-arm64
-        - ghcr.io/jpkrohling/otelcol-distributions/otelcol-sampling:{{ .Version }}-ppc64le
+  - name_template: otel/opentelemetry-collector-sampling:{{ .Version }}
+    image_templates:
+      - otel/opentelemetry-collector-sampling:{{ .Version }}-386
+      - otel/opentelemetry-collector-sampling:{{ .Version }}-amd64
+      - otel/opentelemetry-collector-sampling:{{ .Version }}-armv7
+      - otel/opentelemetry-collector-sampling:{{ .Version }}-arm64
+      - otel/opentelemetry-collector-sampling:{{ .Version }}-ppc64le
+      - otel/opentelemetry-collector-sampling:{{ .Version }}-s390x
+  - name_template: otel/opentelemetry-collector-sampling:latest
+    image_templates:
+      - otel/opentelemetry-collector-sampling:latest-386
+      - otel/opentelemetry-collector-sampling:latest-amd64
+      - otel/opentelemetry-collector-sampling:latest-armv7
+      - otel/opentelemetry-collector-sampling:latest-arm64
+      - otel/opentelemetry-collector-sampling:latest-ppc64le
+      - otel/opentelemetry-collector-sampling:latest-s390x
+  - name_template: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-sampling:{{ .Version }}
+    image_templates:
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-sampling:{{ .Version }}-386
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-sampling:{{ .Version }}-amd64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-sampling:{{ .Version }}-armv7
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-sampling:{{ .Version }}-arm64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-sampling:{{ .Version }}-ppc64le
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-sampling:{{ .Version }}-s390x
+  - name_template: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-sampling:latest
+    image_templates:
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-sampling:latest-386
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-sampling:latest-amd64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-sampling:latest-armv7
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-sampling:latest-arm64
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-sampling:latest-ppc64le
+      - ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-sampling:latest-s390x
+signs:
+  - cmd: cosign
+    args:
+      - sign-blob
+      - --output-signature
+      - ${artifact}.sig
+      - --output-certificate
+      - ${artifact}.pem
+      - ${artifact}
+    signature: ${artifact}.sig
+    artifacts: all
+    certificate: ${artifact}.pem
+docker_signs:
+  - args:
+      - sign
+      - ${artifact}
+    artifacts: all
 sboms:
-    - id: archive
-      artifacts: archive
-    - id: package
-      artifacts: package
+  - id: archive
+    artifacts: archive
+  - id: package
+    artifacts: package
