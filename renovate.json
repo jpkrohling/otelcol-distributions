@@ -28,7 +28,7 @@
         "\\sversion:\\s+(?<currentValue>\\S+)",
         "OTELCOL_BUILDER_VERSION\\s*\\?=\\s*(?<currentValue>\\S+)"
       ],
-      "depNameTemplate": "open-telemetry/opentelemetry-collector",
+      "depNameTemplate": "open-telemetry/opentelemetry-collector-releases",
       "datasourceTemplate": "github-releases",
       "extractVersionTemplate": "^v(?<version>.*)$"
     }
