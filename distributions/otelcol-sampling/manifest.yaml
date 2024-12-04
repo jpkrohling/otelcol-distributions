@@ -2,7 +2,7 @@ dist:
   module: github.com/jpkrohling/otelcol-distributions/otelcol-sampling
   name: otelcol
   description: OpenTelemetry Collector distribution with sampling processors
-  version: 0.115.0
+  version: 0.115.1
   output_path: ./_build
 
 extensions:
