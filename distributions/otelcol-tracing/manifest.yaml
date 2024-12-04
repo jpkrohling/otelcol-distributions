@@ -2,22 +2,21 @@ dist:
   module: github.com/jpkrohling/otelcol-distributions/tracing
   name: otelcol
   description: Distributed tracing distribution of the OpenTelemetry Collector
-  version: 0.111.0
+  version: 0.115.0
   output_path: ./_build
-  otelcol_version: 0.108.1
 
 extensions:
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension v0.108.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension v0.108.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/basicauthextension v0.108.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/bearertokenauthextension v0.108.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/oauth2clientauthextension v0.108.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/oidcauthextension v0.108.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension v0.115.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/pprofextension v0.115.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/basicauthextension v0.115.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/bearertokenauthextension v0.115.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/oauth2clientauthextension v0.115.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/oidcauthextension v0.115.0
 receivers:
-  - gomod: go.opentelemetry.io/collector/receiver/otlpreceiver v0.108.1
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/jaegerreceiver v0.108.0
-  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/zipkinreceiver v0.108.0
+  - gomod: go.opentelemetry.io/collector/receiver/otlpreceiver v0.115.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/jaegerreceiver v0.115.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/zipkinreceiver v0.115.0
 exporters:
-  - gomod: go.opentelemetry.io/collector/exporter/nopexporter v0.108.1
-  - gomod: go.opentelemetry.io/collector/exporter/otlpexporter v0.108.1
-  - gomod: go.opentelemetry.io/collector/exporter/otlphttpexporter v0.108.1
+  - gomod: go.opentelemetry.io/collector/exporter/nopexporter v0.115.0
+  - gomod: go.opentelemetry.io/collector/exporter/otlpexporter v0.115.0
+  - gomod: go.opentelemetry.io/collector/exporter/otlphttpexporter v0.115.0

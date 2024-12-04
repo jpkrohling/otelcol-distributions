@@ -1,7 +1,6 @@
-GO ?= go
 GORELEASER ?= goreleaser
 
-OTELCOL_BUILDER_VERSION ?= 0.111.0
+OTELCOL_BUILDER_VERSION ?= 0.115.0
 OTELCOL_BUILDER_DIR ?= ${HOME}/bin
 OTELCOL_BUILDER ?= ${OTELCOL_BUILDER_DIR}/ocb
 
@@ -10,19 +9,19 @@ DISTRIBUTIONS ?= $(shell echo $(notdir $(wildcard ./distributions/*)) | tr " " "
 ci: check build
 check: test ensure-goreleaser-up-to-date
 
-build: go ocb
-	@./scripts/build.sh -d "${DISTRIBUTIONS}" -b ${OTELCOL_BUILDER} -g ${GO}
+build: ocb
+	@./scripts/build.sh -d "${DISTRIBUTIONS}" -b ${OTELCOL_BUILDER}
 
 test: build
 	@./test/test-all.sh -d "${DISTRIBUTIONS}"
 
 generate: generate-sources generate-goreleaser
 
-generate-goreleaser: go
-	@./scripts/generate-goreleaser.sh -d "${DISTRIBUTIONS}" -g ${GO}
+generate-goreleaser:
+	@./scripts/generate-goreleaser.sh -d "${DISTRIBUTIONS}"
 
-generate-sources: go ocb
-	@./scripts/build.sh -d "${DISTRIBUTIONS}" -s true -b ${OTELCOL_BUILDER} -g ${GO}
+generate-sources: ocb
+	@./scripts/build.sh -d "${DISTRIBUTIONS}" -s true -b ${OTELCOL_BUILDER}
 
 goreleaser-verify: goreleaser
 	@${GORELEASER} release --snapshot --clean
@@ -48,15 +47,6 @@ ifeq (, $(shell command -v ocb 2>/dev/null))
 else
 OTELCOL_BUILDER=$(shell command -v ocb)
 endif
-
-.PHONY: go
-go:
-	@{ \
-		if ! command -v '$(GO)' >/dev/null 2>/dev/null; then \
-			echo >&2 '$(GO) command not found. Please install golang. https://go.dev/doc/install'; \
-			exit 1; \
-		fi \
-	}
 
 .PHONY: goreleaser
 goreleaser:
