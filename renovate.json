@@ -12,7 +12,8 @@
     {
       "matchSourceUrls": [
         "https://github.com/open-telemetry/opentelemetry-collector",
-        "https://github.com/open-telemetry/opentelemetry-collector-contrib"
+        "https://github.com/open-telemetry/opentelemetry-collector-contrib",
+        "https://github.com/open-telemetry/opentelemetry-collector-releases"
       ],
       "groupName": "otel-collector upstream dependencies"
     }

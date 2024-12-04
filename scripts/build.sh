@@ -2,18 +2,16 @@
 
 REPO_DIR="$( cd "$(dirname $( dirname "${BASH_SOURCE[0]}" ))" &> /dev/null && pwd )"
 BUILDER=''
-GO=''
 
 # default values
 skipcompilation=false
 
-while getopts d:s:b:g: flag
+while getopts d:s:b: flag
 do
     case "${flag}" in
         d) distributions=${OPTARG};;
         s) skipcompilation=${OPTARG};;
         b) BUILDER=${OPTARG};;
-        g) GO=${OPTARG};;
     esac
 done
 
@@ -39,9 +37,8 @@ do
 
     echo "Building: $distribution"
     echo "Using Builder: $(command -v "$BUILDER")"
-    echo "Using Go: $(command -v "$GO")"
 
-    if "$BUILDER" --skip-compilation=${skipcompilation} --go "$GO" --config manifest.yaml > _build/build.log 2>&1; then
+    if "$BUILDER" --skip-compilation=${skipcompilation} --config manifest.yaml > _build/build.log 2>&1; then
         echo "✅ SUCCESS: distribution '${distribution}' built."
     else
         echo "❌ ERROR: failed to build the distribution '${distribution}'."
